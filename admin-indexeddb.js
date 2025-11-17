@@ -546,7 +546,7 @@ async function loadSiteSettings() {
     }
 }
 
-async function saveCloudinaryConfig() {
+async function saveCloudinaryConfigHandler() {
     try {
         const cloudName = document.getElementById('cloudinaryCloudName').value.trim();
         const uploadPreset = document.getElementById('cloudinaryUploadPreset').value.trim();
