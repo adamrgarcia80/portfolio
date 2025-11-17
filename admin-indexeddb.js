@@ -526,10 +526,16 @@ async function loadSiteSettings() {
     try {
         const settings = await getSiteSettings();
         
-        // Load bio text
+        // Load bio text - if no saved text, load from index.html default
         const bioTextarea = document.getElementById('bioText');
-        if (bioTextarea && settings.bioText) {
-            bioTextarea.value = settings.bioText;
+        if (bioTextarea) {
+            if (settings.bioText) {
+                bioTextarea.value = settings.bioText;
+            } else {
+                // Load default bio from index.html if no saved version exists
+                const defaultBio = "Adam R Garcia is a creative leader with years of experience shaping culture at scale, most recently as Creative Director at Apple Music. His background bridges global brand leadership with an independent studio and writing practice in cultural production.<br><br>He recently completed a Master of Science in Fiction + Entertainment at SCI-Arc, with work exploring how design, storytelling, and speculative futures can reframe meaning in a world where creativity must evolve beyond traditional models. He believes in building systems, stories, and experiences that are both culturally resonant and necessary for how we imagine and create an empathetic future while reframing what the role of a creator in our current systems can be.";
+                bioTextarea.value = defaultBio;
+            }
         }
         
         // Load Cloudinary config
