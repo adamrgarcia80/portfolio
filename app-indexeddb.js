@@ -29,16 +29,22 @@ async function loadContent() {
         }
         
         // Create projects list
-        const projectsList = document.createElement('div');
+        const projectsList = document.createElement('p');
         projectsList.className = 'projects-list';
         projectsList.style.opacity = '0'; // Start hidden for fade-in
         
-        sortedProjects.forEach(project => {
+        sortedProjects.forEach((project, index) => {
             const projectLink = document.createElement('a');
             projectLink.href = `project.html?id=${project.id}`;
             projectLink.className = 'project-link';
-            projectLink.innerHTML = `<span class="project-title">${project.name || 'Untitled Project'}</span>`;
+            projectLink.textContent = project.name || 'Untitled Project';
             projectsList.appendChild(projectLink);
+            
+            // Add slash separator (except after last item)
+            if (index < sortedProjects.length - 1) {
+                const separator = document.createTextNode(' / ');
+                projectsList.appendChild(separator);
+            }
         });
         
         container.appendChild(projectsList);
