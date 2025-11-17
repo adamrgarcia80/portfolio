@@ -11,9 +11,19 @@ html {
 :root {
     --font-family: 'Vend Sans', sans-serif;
     --bg-color: #000000;
+    --bg-color-dark: #1a1a1a;
     --text-color: #ffffff;
     --spacing-unit: 1.5rem;
     --max-width: 1200px;
+}
+
+@keyframes breathe {
+    0%, 100% {
+        background-color: #000000;
+    }
+    50% {
+        background-color: #1a1a1a;
+    }
 }
 
 body {
@@ -28,6 +38,7 @@ body {
     text-align: left;
     margin: 0;
     padding: 0;
+    animation: breathe 8s ease-in-out infinite;
 }
 
 .container {
