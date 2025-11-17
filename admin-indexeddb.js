@@ -502,6 +502,131 @@ async function deleteFile(id, type) {
     }
 }
 
+// Load site settings (bio and footer links)
+async function loadSiteSettings() {
+    try {
+        const settings = await getSiteSettings();
+        
+        // Load bio text
+        const bioTextarea = document.getElementById('bioText');
+        if (bioTextarea && settings.bioText) {
+            bioTextarea.value = settings.bioText;
+        }
+        
+        // Load footer links
+        await loadFooterLinks();
+    } catch (error) {
+        console.error('Error loading site settings:', error);
+    }
+}
+
+async function saveBioText() {
+    try {
+        const bioText = document.getElementById('bioText').value;
+        const settings = await getSiteSettings();
+        settings.bioText = bioText;
+        await saveSiteSettings(settings);
+        alert('Bio text saved!');
+        
+        // Update index page if it's open
+        if (window.updatePortfolioContent) {
+            window.updatePortfolioContent();
+        }
+    } catch (error) {
+        console.error('Error saving bio text:', error);
+        alert('Error saving bio text');
+    }
+}
+
+async function loadFooterLinks() {
+    try {
+        const settings = await getSiteSettings();
+        const links = settings.footerLinks || [];
+        const linksList = document.getElementById('footerLinksList');
+        if (!linksList) return;
+        
+        linksList.innerHTML = '';
+        
+        if (links.length === 0) {
+            linksList.innerHTML = '<p style="opacity: 0.6; font-size: 0.9rem;">No links yet</p>';
+            return;
+        }
+        
+        links.forEach((link, index) => {
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'file-item';
+            linkDiv.innerHTML = `
+                <span><a href="${link.url}" target="_blank" style="color: var(--text-color); text-decoration: underline;">${link.text}</a></span>
+                <button onclick="deleteFooterLink(${index})">Delete</button>
+            `;
+            linksList.appendChild(linkDiv);
+        });
+    } catch (error) {
+        console.error('Error loading footer links:', error);
+    }
+}
+
+async function addFooterLink() {
+    try {
+        const text = document.getElementById('linkText').value.trim();
+        const url = document.getElementById('linkUrl').value.trim();
+        
+        if (!text || !url) {
+            alert('Please enter both link text and URL');
+            return;
+        }
+        
+        const settings = await getSiteSettings();
+        if (!settings.footerLinks) {
+            settings.footerLinks = [];
+        }
+        
+        settings.footerLinks.push({ text, url });
+        await saveSiteSettings(settings);
+        
+        document.getElementById('linkText').value = '';
+        document.getElementById('linkUrl').value = '';
+        
+        await loadFooterLinks();
+        
+        // Update index page if it's open
+        if (window.updatePortfolioContent) {
+            window.updatePortfolioContent();
+        }
+    } catch (error) {
+        console.error('Error adding footer link:', error);
+        alert('Error adding footer link');
+    }
+}
+
+async function deleteFooterLink(index) {
+    if (!confirm('Delete this link?')) return;
+    
+    try {
+        const settings = await getSiteSettings();
+        if (settings.footerLinks) {
+            settings.footerLinks.splice(index, 1);
+            await saveSiteSettings(settings);
+            await loadFooterLinks();
+            
+            // Update index page if it's open
+            if (window.updatePortfolioContent) {
+                window.updatePortfolioContent();
+            }
+        }
+    } catch (error) {
+        console.error('Error deleting footer link:', error);
+        alert('Error deleting footer link');
+    }
+}
+
+// Load content on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    await initDB();
+    await loadProjects();
+    await loadSiteSettings();
+});
+
 // Allow Enter key to authenticate
 document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {

@@ -240,6 +240,31 @@ async function getVideosForProject(projectId) {
     return videos.filter(vid => vid.projectId === projectId);
 }
 
+// Site Settings (bio text and footer links)
+async function getSiteSettings() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_SITE_SETTINGS], 'readonly');
+        const store = transaction.objectStore(STORE_SITE_SETTINGS);
+        const request = store.get('main');
+        
+        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [] });
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveSiteSettings(settings) {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
+        const store = transaction.objectStore(STORE_SITE_SETTINGS);
+        const request = store.put({ id: 'main', ...settings });
+        
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
 // Initialize with default content if empty
 async function initializeDefaults() {
     const sections = await getSections();
