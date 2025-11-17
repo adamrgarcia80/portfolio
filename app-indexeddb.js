@@ -236,7 +236,11 @@ function startCarousel(totalImages) {
 }
 
 // Make this available globally for admin panel
-window.updatePortfolioContent = loadContent;
+window.updatePortfolioContent = async () => {
+    await loadContent();
+    await loadBioText();
+    await loadFooterLinks();
+};
 
 // Also update carousel when content changes
 window.updateImageCarousel = loadImageCarousel;
