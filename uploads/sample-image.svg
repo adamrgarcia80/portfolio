@@ -1,0 +1,7 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#1a1a1a"/>
+  <rect x="50" y="50" width="700" height="500" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <text x="400" y="300" font-family="Arial, sans-serif" font-size="24" fill="#ffffff" text-anchor="middle">Sample Image</text>
+  <text x="400" y="330" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" text-anchor="middle" opacity="0.7">800 x 600</text>
+</svg>
+

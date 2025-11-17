@@ -1,0 +1,55 @@
+═══════════════════════════════════════════════════════════════
+  ⚠️  READ THIS FIRST - INSTALL NODE.JS
+═══════════════════════════════════════════════════════════════
+
+Your server can't run because Node.js is not installed.
+
+═══════════════════════════════════════════════════════════════
+  QUICK INSTALLATION (5 minutes):
+═══════════════════════════════════════════════════════════════
+
+1. Open your web browser (Safari, Chrome, etc.)
+
+2. Go to: nodejs.org
+
+3. Click the BIG GREEN BUTTON that says:
+   "Download Node.js (LTS)"
+
+4. Find the downloaded file in your Downloads folder
+   (It will be called something like: node-v20.x.x.pkg)
+
+5. Double-click the file to open it
+
+6. Click "Continue" → "Continue" → "Agree" → "Install"
+
+7. Enter your Mac password when asked
+
+8. Wait for installation to finish (1-2 minutes)
+
+9. Click "Close" when done
+
+10. RESTART Terminal:
+    - Close Terminal completely (Cmd+Q)
+    - Open it again (Cmd+Space, type "Terminal")
+
+11. Test it worked:
+    - Type: node --version
+    - Press Enter
+    - You should see: v20.x.x (or similar)
+
+═══════════════════════════════════════════════════════════════
+  AFTER INSTALLING NODE.JS:
+═══════════════════════════════════════════════════════════════
+
+Then come back and run these commands in Terminal:
+
+cd ~/Desktop/Cursor/Portfolio
+npm install
+npm start
+
+═══════════════════════════════════════════════════════════════
+
+For detailed step-by-step instructions, see:
+INSTALL_NODEJS_STEP_BY_STEP.md
+
+

@@ -1,0 +1,63 @@
+═══════════════════════════════════════════════════════════════
+  QUICK FIX - Copy and Paste These Commands ONE AT A TIME
+═══════════════════════════════════════════════════════════════
+
+STEP 1: Open Terminal
+  - Press Cmd+Space
+  - Type "Terminal"
+  - Press Enter
+
+STEP 2: Check if Node.js is installed
+  Copy this and paste into Terminal:
+  
+  node --version
+  
+  ✅ If you see a number (like v20.10.0) → Go to STEP 3
+  ❌ If you see "command not found" → Install Node.js first:
+     → Go to https://nodejs.org/
+     → Download and install
+     → Restart Terminal
+     → Come back to STEP 2
+
+STEP 3: Go to your project folder
+  Copy this and paste into Terminal:
+  
+  cd ~/Desktop/Cursor/Portfolio
+  
+  Press Enter
+
+STEP 4: Install dependencies (first time only)
+  Copy this and paste into Terminal:
+  
+  npm install
+  
+  Press Enter and WAIT (this takes 1-2 minutes)
+  ✅ When you see "added X packages" → Go to STEP 5
+
+STEP 5: Start the server
+  Copy this and paste into Terminal:
+  
+  npm start
+  
+  Press Enter
+  
+  ✅ You should see: "Server running on http://localhost:3000"
+  
+  ⚠️ KEEP THIS TERMINAL WINDOW OPEN!
+
+STEP 6: Open your browser
+  - Go to: http://localhost:3000/admin.html
+  - You should see green "✓ Server connected"
+  - Enter password: admin123
+  - Click "Access"
+
+═══════════════════════════════════════════════════════════════
+  IF IT STILL DOESN'T WORK:
+═══════════════════════════════════════════════════════════════
+
+Tell me:
+1. What do you see when you type "node --version"?
+2. What do you see when you type "npm start"?
+3. Any error messages? (copy and paste them)
+
+
