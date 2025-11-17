@@ -1,10 +1,48 @@
 // Portfolio page using IndexedDB for large file support
 // Shows list of projects on index page
 
+async function loadBioText() {
+    try {
+        const settings = await getSiteSettings();
+        const bioElement = document.querySelector('.header-bio');
+        if (bioElement && settings.bioText) {
+            bioElement.innerHTML = settings.bioText;
+        }
+    } catch (error) {
+        console.error('Error loading bio text:', error);
+    }
+}
+
+async function loadFooterLinks() {
+    try {
+        const settings = await getSiteSettings();
+        const footerLinksDiv = document.getElementById('footerLinks');
+        if (!footerLinksDiv) return;
+        
+        const links = settings.footerLinks || [];
+        if (links.length === 0) {
+            footerLinksDiv.innerHTML = '';
+            return;
+        }
+        
+        const linksHTML = links.map((link, index) => {
+            return `<a href="${link.url}" target="_blank" class="footer-link">${link.text}</a>${index < links.length - 1 ? ' / ' : ''}`;
+        }).join('');
+        
+        footerLinksDiv.innerHTML = linksHTML;
+    } catch (error) {
+        console.error('Error loading footer links:', error);
+    }
+}
+
 async function loadContent() {
     try {
         await initDB();
         await initializeDefaults();
+        
+        // Load bio text and footer links
+        await loadBioText();
+        await loadFooterLinks();
         
         // Don't start carousel yet - wait for text animation
         // Carousel will be started after text animation completes

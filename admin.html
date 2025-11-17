@@ -80,6 +80,28 @@
                 <button onclick="saveProjectInfo()" class="save-project-btn" style="width: 100%;">Save Project</button>
             </div>
             
+            <!-- Index Page Settings -->
+            <div class="admin-section">
+                <h2>Index Page Bio</h2>
+                <div class="form-group">
+                    <textarea id="bioText" placeholder="Enter bio text. Use &lt;br&gt; or &lt;br/&gt; for line breaks." style="min-height: 200px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <button onclick="saveBioText()">Save Bio</button>
+                </div>
+            </div>
+            
+            <!-- Footer Links -->
+            <div class="admin-section">
+                <h2>Footer Links</h2>
+                <div id="footerLinksList" style="margin-top: var(--spacing-unit);"></div>
+                <div class="form-group" style="display: flex; gap: var(--spacing-unit); margin-top: var(--spacing-unit);">
+                    <input type="text" id="linkText" placeholder="Link text" style="flex: 1;" />
+                    <input type="text" id="linkUrl" placeholder="URL" style="flex: 1;" />
+                    <button onclick="addFooterLink()">Add Link</button>
+                </div>
+            </div>
+            
             <div class="admin-section">
                 <a href="index.html" style="color: var(--text-color); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem;">← Back to Portfolio</a>
             </div>

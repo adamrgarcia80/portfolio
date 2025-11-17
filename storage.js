@@ -2,11 +2,12 @@
 // Can store hundreds of MB or even GB of data
 
 const DB_NAME = 'portfolioDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STORE_SECTIONS = 'sections';
 const STORE_IMAGES = 'images';
 const STORE_VIDEOS = 'videos';
 const STORE_PROJECTS = 'projects';
+const STORE_SITE_SETTINGS = 'siteSettings';
 
 let db = null;
 
@@ -36,6 +37,9 @@ function initDB() {
             }
             if (!db.objectStoreNames.contains(STORE_PROJECTS)) {
                 db.createObjectStore(STORE_PROJECTS, { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains(STORE_SITE_SETTINGS)) {
+                db.createObjectStore(STORE_SITE_SETTINGS, { keyPath: 'id' });
             }
         };
     });
