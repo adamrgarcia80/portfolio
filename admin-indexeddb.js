@@ -627,6 +627,127 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSiteSettings();
 });
 
+async function exportData() {
+    try {
+        const statusDiv = document.getElementById('syncStatus');
+        statusDiv.innerHTML = '<span>Exporting data...</span>';
+        
+        // Get all data from IndexedDB
+        const [projects, sections, images, videos, siteSettings] = await Promise.all([
+            getProjects(),
+            getSections(),
+            getImages(),
+            getVideos(),
+            getSiteSettings()
+        ]);
+        
+        const exportData = {
+            projects,
+            sections,
+            images,
+            videos,
+            siteSettings,
+            exportDate: new Date().toISOString()
+        };
+        
+        // Create download
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `portfolio-export-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        statusDiv.innerHTML = '<span class="success">Data exported successfully!</span>';
+        setTimeout(() => {
+            statusDiv.innerHTML = '';
+        }, 3000);
+    } catch (error) {
+        console.error('Error exporting data:', error);
+        const statusDiv = document.getElementById('syncStatus');
+        statusDiv.innerHTML = '<span class="error">Error exporting data</span>';
+    }
+}
+
+async function importData(event) {
+    try {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const statusDiv = document.getElementById('syncStatus');
+        statusDiv.innerHTML = '<span>Importing data...</span>';
+        
+        const text = await file.text();
+        const importData = JSON.parse(text);
+        
+        // Import projects
+        if (importData.projects) {
+            for (const project of importData.projects) {
+                await saveProject(project);
+            }
+        }
+        
+        // Import sections
+        if (importData.sections) {
+            for (const section of importData.sections) {
+                await saveSection(section);
+            }
+        }
+        
+        // Import images
+        if (importData.images) {
+            for (const image of importData.images) {
+                await saveImage(image);
+            }
+        }
+        
+        // Import videos
+        if (importData.videos) {
+            for (const video of importData.videos) {
+                await saveVideo(video);
+            }
+        }
+        
+        // Import site settings
+        if (importData.siteSettings) {
+            await saveSiteSettings(importData.siteSettings);
+        }
+        
+        // Reload everything
+        await loadProjects();
+        await loadSiteSettings();
+        if (currentProjectId) {
+            await loadProjectContent();
+        }
+        
+        statusDiv.innerHTML = '<span class="success">Data imported successfully! Refresh the page to see changes.</span>';
+        
+        // Update index page if it's open
+        if (window.updatePortfolioContent) {
+            window.updatePortfolioContent();
+        }
+        if (window.updateImageCarousel) {
+            window.updateImageCarousel();
+        }
+        
+        // Clear file input
+        event.target.value = '';
+        
+        setTimeout(() => {
+            statusDiv.innerHTML = '';
+        }, 5000);
+    } catch (error) {
+        console.error('Error importing data:', error);
+        const statusDiv = document.getElementById('syncStatus');
+        statusDiv.innerHTML = '<span class="error">Error importing data. Please check the file format.</span>';
+        event.target.value = '';
+    }
+}
+
 // Allow Enter key to authenticate
 document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {

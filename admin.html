@@ -102,6 +102,18 @@
                 </div>
             </div>
             
+            <!-- Data Export/Import -->
+            <div class="admin-section">
+                <h2>Sync Data</h2>
+                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Export your data to transfer it to another device, or import data from another device.</p>
+                <div class="form-group" style="display: flex; gap: var(--spacing-unit);">
+                    <button onclick="exportData()" style="flex: 1;">Export Data</button>
+                    <button onclick="document.getElementById('importFile').click()" style="flex: 1;">Import Data</button>
+                </div>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)" />
+                <div id="syncStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
+            </div>
+            
             <div class="admin-section">
                 <a href="index.html" style="color: var(--text-color); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem;">← Back to Portfolio</a>
             </div>
