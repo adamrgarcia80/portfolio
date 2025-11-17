@@ -6,6 +6,8 @@
 
 html {
     text-align: left;
+    background-color: #000000;
+    animation: breathe 8s ease-in-out infinite;
 }
 
 :root {
@@ -24,10 +26,6 @@ html {
     50% {
         background-color: #1a1a1a;
     }
-}
-
-html {
-    animation: breathe 8s ease-in-out infinite;
 }
 
 body {
