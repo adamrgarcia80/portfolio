@@ -163,7 +163,7 @@ async function loadImageCarousel() {
             link.style.maxWidth = '1200px';
             
             const img = document.createElement('img');
-            img.src = image.data;
+            img.src = image.url || image.data; // Support both Cloudinary URLs and legacy base64
             img.alt = image.name || 'Image';
             img.className = 'carousel-image';
             if (index === 0) {

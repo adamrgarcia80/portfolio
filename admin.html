@@ -102,6 +102,22 @@
                 </div>
             </div>
             
+            <!-- Cloudinary Configuration -->
+            <div class="admin-section">
+                <h2>Cloud Storage (Cloudinary)</h2>
+                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Configure Cloudinary to store images in the cloud. <a href="https://cloudinary.com/users/register_free" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then get your Cloud Name and Upload Preset from the dashboard.</p>
+                <div class="form-group">
+                    <input type="text" id="cloudinaryCloudName" placeholder="Cloud Name (e.g., 'mycloud')" />
+                </div>
+                <div class="form-group">
+                    <input type="text" id="cloudinaryUploadPreset" placeholder="Upload Preset (e.g., 'my-unsigned-preset')" />
+                </div>
+                <div class="form-group">
+                    <button onclick="saveCloudinaryConfig()">Save Cloudinary Settings</button>
+                </div>
+                <div id="cloudinaryStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
+            </div>
+            
             <!-- Data Export/Import -->
             <div class="admin-section">
                 <h2>Sync Data</h2>

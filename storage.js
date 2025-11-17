@@ -265,6 +265,19 @@ async function saveSiteSettings(settings) {
     });
 }
 
+// Get Cloudinary configuration
+async function getCloudinaryConfig() {
+    const settings = await getSiteSettings();
+    return settings.cloudinaryConfig || { cloudName: '', uploadPreset: '' };
+}
+
+// Save Cloudinary configuration
+async function saveCloudinaryConfig(config) {
+    const settings = await getSiteSettings();
+    settings.cloudinaryConfig = config;
+    await saveSiteSettings(settings);
+}
+
 // Initialize with default content if empty
 async function initializeDefaults() {
     const sections = await getSections();

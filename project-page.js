@@ -107,7 +107,7 @@ async function loadProject() {
                 
                 singleImages.forEach(image => {
                     const img = document.createElement('img');
-                    img.src = image.data;
+                    img.src = image.url || image.data; // Support both Cloudinary URLs and legacy base64
                     img.alt = image.name || 'Image';
                     imagesDiv.appendChild(img);
                 });
@@ -123,12 +123,12 @@ async function loadProject() {
                 const twoColumnGrid = document.createElement('div');
                 twoColumnGrid.className = 'two-column-grid';
                 
-                twoColumnImages.forEach(image => {
-                    const img = document.createElement('img');
-                    img.src = image.data;
-                    img.alt = image.name || 'Image';
-                    twoColumnGrid.appendChild(img);
-                });
+                        twoColumnImages.forEach(image => {
+                            const img = document.createElement('img');
+                            img.src = image.url || image.data; // Support both Cloudinary URLs and legacy base64
+                            img.alt = image.name || 'Image';
+                            twoColumnGrid.appendChild(img);
+                        });
                 
                 imagesDiv.appendChild(twoColumnGrid);
                 container.appendChild(imagesDiv);

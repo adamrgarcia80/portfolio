@@ -424,58 +424,77 @@ async function uploadFile(type) {
         return;
     }
     
-    statusDiv.innerHTML = '<span>Processing...</span>';
+    statusDiv.innerHTML = '<span>Uploading to cloud...</span>';
     
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const layout = document.getElementById('imageLayout').value;
-            
-            // Get current max order and add 1
-            const existingImages = await getImagesForProject(currentProjectId);
-            const maxOrder = existingImages.length > 0 ? Math.max(...existingImages.map(i => i.order || 0)) : -1;
-            const order = maxOrder + 1;
-            
-            const fileData = {
-                id: Date.now().toString(),
-                name: file.name,
-                data: e.target.result,
-                size: file.size,
-                type: 'image',
-                layout: layout,
-                order: order,
-                projectId: currentProjectId,
-                uploadedAt: new Date().toISOString()
-            };
-            
-            await saveImage(fileData);
-            
-            statusDiv.innerHTML = '<span class="success">Added</span>';
-            fileInput.value = '';
-            hideAddImage();
-            await loadProjectContent();
-            
-            if (window.updatePortfolioContent) {
-                window.updatePortfolioContent();
-            }
-            if (window.updateImageCarousel) {
-                window.updateImageCarousel();
-            }
-            
-            setTimeout(() => {
-                statusDiv.innerHTML = '';
-            }, 2000);
-        } catch (error) {
-            console.error('Error saving file:', error);
-            statusDiv.innerHTML = '<span class="error">Upload failed</span>';
+    try {
+        // Get Cloudinary config
+        const cloudinaryConfig = await getCloudinaryConfig();
+        
+        if (!cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
+            statusDiv.innerHTML = '<span class="error">Please configure Cloudinary settings first</span>';
+            return;
         }
-    };
-    
-    reader.onerror = function() {
-        statusDiv.innerHTML = '<span class="error">File read failed</span>';
-    };
-    
-    reader.readAsDataURL(file);
+        
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+        
+        const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
+        
+        const response = await fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Cloudinary upload failed');
+        }
+        
+        const cloudinaryData = await response.json();
+        
+        const layout = document.getElementById('imageLayout').value;
+        
+        // Get current max order and add 1
+        const existingImages = await getImagesForProject(currentProjectId);
+        const maxOrder = existingImages.length > 0 ? Math.max(...existingImages.map(i => i.order || 0)) : -1;
+        const order = maxOrder + 1;
+        
+        // Store Cloudinary URL instead of base64
+        const fileData = {
+            id: Date.now().toString(),
+            name: file.name,
+            url: cloudinaryData.secure_url, // Use Cloudinary URL
+            publicId: cloudinaryData.public_id, // Store for deletion
+            size: file.size,
+            type: 'image',
+            layout: layout,
+            order: order,
+            projectId: currentProjectId,
+            uploadedAt: new Date().toISOString()
+        };
+        
+        await saveImage(fileData);
+        
+        statusDiv.innerHTML = '<span class="success">Uploaded to cloud!</span>';
+        fileInput.value = '';
+        hideAddImage();
+        await loadProjectContent();
+        
+        if (window.updatePortfolioContent) {
+            window.updatePortfolioContent();
+        }
+        if (window.updateImageCarousel) {
+            window.updateImageCarousel();
+        }
+        
+        setTimeout(() => {
+            statusDiv.innerHTML = '';
+        }, 2000);
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        statusDiv.innerHTML = '<span class="error">Upload failed. Check Cloudinary settings.</span>';
+    }
 }
 
 async function deleteFile(id, type) {
@@ -513,10 +532,39 @@ async function loadSiteSettings() {
             bioTextarea.value = settings.bioText;
         }
         
+        // Load Cloudinary config
+        const cloudinaryConfig = settings.cloudinaryConfig || { cloudName: '', uploadPreset: '' };
+        const cloudNameInput = document.getElementById('cloudinaryCloudName');
+        const uploadPresetInput = document.getElementById('cloudinaryUploadPreset');
+        if (cloudNameInput) cloudNameInput.value = cloudinaryConfig.cloudName || '';
+        if (uploadPresetInput) uploadPresetInput.value = cloudinaryConfig.uploadPreset || '';
+        
         // Load footer links
         await loadFooterLinks();
     } catch (error) {
         console.error('Error loading site settings:', error);
+    }
+}
+
+async function saveCloudinaryConfig() {
+    try {
+        const cloudName = document.getElementById('cloudinaryCloudName').value.trim();
+        const uploadPreset = document.getElementById('cloudinaryUploadPreset').value.trim();
+        
+        if (!cloudName || !uploadPreset) {
+            document.getElementById('cloudinaryStatus').innerHTML = '<span class="error">Please enter both Cloud Name and Upload Preset</span>';
+            return;
+        }
+        
+        await saveCloudinaryConfig({ cloudName, uploadPreset });
+        document.getElementById('cloudinaryStatus').innerHTML = '<span class="success">Cloudinary settings saved!</span>';
+        
+        setTimeout(() => {
+            document.getElementById('cloudinaryStatus').innerHTML = '';
+        }, 3000);
+    } catch (error) {
+        console.error('Error saving Cloudinary config:', error);
+        document.getElementById('cloudinaryStatus').innerHTML = '<span class="error">Error saving settings</span>';
     }
 }
 
