@@ -26,6 +26,10 @@ html {
     }
 }
 
+html {
+    animation: breathe 8s ease-in-out infinite;
+}
+
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
@@ -38,7 +42,6 @@ body {
     text-align: left;
     margin: 0;
     padding: 0;
-    animation: breathe 8s ease-in-out infinite;
 }
 
 .container {
