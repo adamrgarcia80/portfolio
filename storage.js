@@ -1,5 +1,5 @@
-// Storage manager using IndexedDB for large file support
-// Can store hundreds of MB or even GB of data
+// Storage manager with Firebase Firestore (for cross-device sync) and IndexedDB fallback
+// Images are stored in Cloudinary URLs, metadata syncs via Firebase
 
 const DB_NAME = 'portfolioDB';
 const DB_VERSION = 3;
@@ -10,6 +10,91 @@ const STORE_PROJECTS = 'projects';
 const STORE_SITE_SETTINGS = 'siteSettings';
 
 let db = null;
+
+// Firebase helper functions
+async function useFirebase() {
+    try {
+        // Check if Firebase is initialized
+        if (window.firestore) {
+            return true;
+        }
+        // Try to initialize from stored config
+        const settings = await getSiteSettingsFromIndexedDB();
+        if (settings.firebaseConfig && window.initFirebase) {
+            window.initFirebase(settings.firebaseConfig);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return !!window.firestore;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error checking Firebase:', error);
+        return false;
+    }
+}
+
+// Firebase operations (using Firestore)
+async function firebaseGet(collectionName) {
+    if (!window.firestore) return [];
+    try {
+        const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const ref = collection(window.firestore, collectionName);
+        const snapshot = await getDocs(query(ref, orderBy('order', 'asc')));
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error(`Error getting ${collectionName} from Firebase:`, error);
+        return [];
+    }
+}
+
+async function firebaseSave(collectionName, item) {
+    if (!window.firestore) return;
+    try {
+        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const ref = doc(window.firestore, collectionName, item.id);
+        await setDoc(ref, item);
+    } catch (error) {
+        console.error(`Error saving ${collectionName} to Firebase:`, error);
+    }
+}
+
+async function firebaseDelete(collectionName, id) {
+    if (!window.firestore) return;
+    try {
+        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const ref = doc(window.firestore, collectionName, id);
+        await deleteDoc(ref);
+    } catch (error) {
+        console.error(`Error deleting ${collectionName} from Firebase:`, error);
+    }
+}
+
+async function firebaseGetDoc(collectionName, docId) {
+    if (!window.firestore) return null;
+    try {
+        const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const ref = doc(window.firestore, collectionName, docId);
+        const snapshot = await getDoc(ref);
+        if (snapshot.exists()) {
+            return { id: snapshot.id, ...snapshot.data() };
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error getting ${collectionName} doc from Firebase:`, error);
+        return null;
+    }
+}
+
+// IndexedDB helper (for fallback and site settings)
+async function getSiteSettingsFromIndexedDB() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_SITE_SETTINGS], 'readonly');
+        const store = transaction.objectStore(STORE_SITE_SETTINGS);
+        const request = store.get('main');
+        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [], cloudinaryConfig: {}, firebaseConfig: null });
+        request.onerror = () => reject(request.error);
+    });
+}
 
 // Initialize database
 function initDB() {
@@ -53,36 +138,50 @@ async function getDB() {
 
 // Sections
 async function getSections() {
+    if (await useFirebase()) {
+        const firebaseData = await firebaseGet('sections');
+        // Also save to IndexedDB as backup
+        if (firebaseData.length > 0) {
+            const database = await getDB();
+            const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
+            const store = transaction.objectStore(STORE_SECTIONS);
+            firebaseData.forEach(item => store.put(item));
+        }
+        return firebaseData;
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readonly');
         const store = transaction.objectStore(STORE_SECTIONS);
         const request = store.getAll();
-        
         request.onsuccess = () => resolve(request.result || []);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function saveSection(section) {
+    if (await useFirebase()) {
+        await firebaseSave('sections', section);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
         const store = transaction.objectStore(STORE_SECTIONS);
         const request = store.put(section);
-        
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteSection(id) {
+    if (await useFirebase()) {
+        await firebaseDelete('sections', id);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
         const store = transaction.objectStore(STORE_SECTIONS);
         const request = store.delete(id);
-        
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
     });
@@ -90,36 +189,50 @@ async function deleteSection(id) {
 
 // Images
 async function getImages() {
+    if (await useFirebase()) {
+        const firebaseData = await firebaseGet('images');
+        // Also save to IndexedDB as backup
+        if (firebaseData.length > 0) {
+            const database = await getDB();
+            const transaction = database.transaction([STORE_IMAGES], 'readwrite');
+            const store = transaction.objectStore(STORE_IMAGES);
+            firebaseData.forEach(item => store.put(item));
+        }
+        return firebaseData;
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readonly');
         const store = transaction.objectStore(STORE_IMAGES);
         const request = store.getAll();
-        
         request.onsuccess = () => resolve(request.result || []);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function saveImage(image) {
+    if (await useFirebase()) {
+        await firebaseSave('images', image);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readwrite');
         const store = transaction.objectStore(STORE_IMAGES);
         const request = store.put(image);
-        
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteImage(id) {
+    if (await useFirebase()) {
+        await firebaseDelete('images', id);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readwrite');
         const store = transaction.objectStore(STORE_IMAGES);
         const request = store.delete(id);
-        
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
     });
@@ -175,48 +288,72 @@ async function getAllData() {
 
 // Projects
 async function getProjects() {
+    if (await useFirebase()) {
+        const firebaseData = await firebaseGet('projects');
+        // Also save to IndexedDB as backup
+        if (firebaseData.length > 0) {
+            const database = await getDB();
+            const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
+            const store = transaction.objectStore(STORE_PROJECTS);
+            firebaseData.forEach(item => store.put(item));
+        }
+        return firebaseData;
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readonly');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.getAll();
-        
         request.onsuccess = () => resolve(request.result || []);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function getProject(id) {
+    if (await useFirebase()) {
+        const firebaseData = await firebaseGetDoc('projects', id);
+        if (firebaseData) {
+            // Also save to IndexedDB as backup
+            const database = await getDB();
+            const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
+            const store = transaction.objectStore(STORE_PROJECTS);
+            store.put(firebaseData);
+        }
+        return firebaseData;
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readonly');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.get(id);
-        
         request.onsuccess = () => resolve(request.result || null);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function saveProject(project) {
+    if (await useFirebase()) {
+        await firebaseSave('projects', project);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.put(project);
-        
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteProject(id) {
+    if (await useFirebase()) {
+        await firebaseDelete('projects', id);
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.delete(id);
-        
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
     });
@@ -240,26 +377,31 @@ async function getVideosForProject(projectId) {
     return videos.filter(vid => vid.projectId === projectId);
 }
 
-// Site Settings (bio text and footer links)
+// Site Settings (bio text and footer links) - always use IndexedDB for settings
 async function getSiteSettings() {
-    const database = await getDB();
-    return new Promise((resolve, reject) => {
-        const transaction = database.transaction([STORE_SITE_SETTINGS], 'readonly');
-        const store = transaction.objectStore(STORE_SITE_SETTINGS);
-        const request = store.get('main');
-        
-        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [] });
-        request.onerror = () => reject(request.error);
-    });
+    if (await useFirebase()) {
+        const firebaseData = await firebaseGetDoc('siteSettings', 'main');
+        if (firebaseData) {
+            // Also save to IndexedDB
+            const database = await getDB();
+            const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
+            const store = transaction.objectStore(STORE_SITE_SETTINGS);
+            store.put(firebaseData);
+            return firebaseData;
+        }
+    }
+    return await getSiteSettingsFromIndexedDB();
 }
 
 async function saveSiteSettings(settings) {
+    if (await useFirebase()) {
+        await firebaseSave('siteSettings', { id: 'main', ...settings });
+    }
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
         const store = transaction.objectStore(STORE_SITE_SETTINGS);
         const request = store.put({ id: 'main', ...settings });
-        
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });

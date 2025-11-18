@@ -8,6 +8,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vend+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase config - will be set by user
+        window.firebaseConfig = null;
+        window.firebaseApp = null;
+        window.firestore = null;
+        
+        window.initFirebase = function(config) {
+            window.firebaseConfig = config;
+            window.firebaseApp = initializeApp(config);
+            window.firestore = getFirestore(window.firebaseApp);
+        };
+    </script>
 </head>
 <body>
     <div class="admin-container">
@@ -103,9 +119,28 @@
                 </div>
             </div>
             
+            <!-- Firebase Configuration -->
+            <div class="admin-section">
+                <h2>Cloud Sync (Firebase)</h2>
+                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Configure Firebase to sync your portfolio data across all devices. <a href="https://console.firebase.google.com/" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then:</p>
+                <ol style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit); padding-left: 1.5rem;">
+                    <li>Create a new Firebase project</li>
+                    <li>Enable Firestore Database (Build → Firestore Database → Create database → Start in test mode)</li>
+                    <li>Go to Project Settings → General → Your apps → Web app</li>
+                    <li>Copy the Firebase config object and paste it below</li>
+                </ol>
+                <div class="form-group">
+                    <textarea id="firebaseConfig" placeholder='Paste Firebase config: { "apiKey": "...", "authDomain": "...", "projectId": "...", "storageBucket": "...", "messagingSenderId": "...", "appId": "..." }' style="min-height: 120px; font-family: monospace; font-size: 0.8rem;"></textarea>
+                </div>
+                <div class="form-group">
+                    <button onclick="saveFirebaseConfigHandler()">Save Firebase Settings</button>
+                </div>
+                <div id="firebaseStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
+            </div>
+            
             <!-- Cloudinary Configuration -->
             <div class="admin-section">
-                <h2>Cloud Storage (Cloudinary)</h2>
+                <h2>Image Storage (Cloudinary)</h2>
                 <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Configure Cloudinary to store images in the cloud. <a href="https://cloudinary.com/users/register_free" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then:</p>
                 <ol style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit); padding-left: 1.5rem;">
                     <li>Get your <strong>Cloud Name</strong> from the dashboard (top of page)</li>

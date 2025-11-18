@@ -611,6 +611,16 @@ async function loadSiteSettings() {
             }
         }
         
+        // Load Firebase config
+        const firebaseConfigTextarea = document.getElementById('firebaseConfig');
+        if (firebaseConfigTextarea && settings.firebaseConfig) {
+            firebaseConfigTextarea.value = JSON.stringify(settings.firebaseConfig, null, 2);
+            // Initialize Firebase if config exists
+            if (window.initFirebase) {
+                window.initFirebase(settings.firebaseConfig);
+            }
+        }
+        
         // Load Cloudinary config
         const cloudinaryConfig = settings.cloudinaryConfig || { cloudName: '', uploadPreset: '' };
         const cloudNameInput = document.getElementById('cloudinaryCloudName');
@@ -622,6 +632,108 @@ async function loadSiteSettings() {
         await loadFooterLinks();
     } catch (error) {
         console.error('Error loading site settings:', error);
+    }
+}
+
+async function saveFirebaseConfigHandler() {
+    try {
+        const statusDiv = document.getElementById('firebaseStatus');
+        const configText = document.getElementById('firebaseConfig').value.trim();
+        
+        if (!configText) {
+            statusDiv.innerHTML = '<span class="error">Please paste your Firebase config</span>';
+            return;
+        }
+        
+        let firebaseConfig;
+        try {
+            firebaseConfig = JSON.parse(configText);
+        } catch (e) {
+            statusDiv.innerHTML = '<span class="error">Invalid JSON. Please check your Firebase config format.</span>';
+            return;
+        }
+        
+        // Validate required fields
+        if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+            statusDiv.innerHTML = '<span class="error">Invalid Firebase config. Missing required fields (apiKey, projectId).</span>';
+            return;
+        }
+        
+        // Save to site settings
+        const settings = await getSiteSettings();
+        settings.firebaseConfig = firebaseConfig;
+        await saveSiteSettings(settings);
+        
+        // Initialize Firebase
+        if (window.initFirebase) {
+            window.initFirebase(firebaseConfig);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            if (window.firestore) {
+                statusDiv.innerHTML = '<span class="success">Firebase connected! Your data will now sync across all devices.</span>';
+                
+                // Migrate existing data to Firebase
+                statusDiv.innerHTML += '<br><span style="opacity: 0.7; font-size: 0.85rem;">Migrating existing data to Firebase...</span>';
+                await migrateDataToFirebase();
+                statusDiv.innerHTML = '<span class="success">Firebase connected and data migrated! Your portfolio will now sync across all devices.</span>';
+            } else {
+                statusDiv.innerHTML = '<span class="error">Firebase config saved but initialization failed. Check browser console for errors.</span>';
+            }
+        } else {
+            statusDiv.innerHTML = '<span class="error">Firebase SDK not loaded. Please refresh the page.</span>';
+        }
+        
+        setTimeout(() => {
+            statusDiv.innerHTML = '';
+        }, 5000);
+    } catch (error) {
+        console.error('Error saving Firebase config:', error);
+        document.getElementById('firebaseStatus').innerHTML = '<span class="error">Error saving Firebase config: ' + error.message + '</span>';
+    }
+}
+
+async function migrateDataToFirebase() {
+    try {
+        // Get all existing data from IndexedDB
+        const [projects, sections, images, videos, siteSettings] = await Promise.all([
+            getProjects(),
+            getSections(),
+            getImages(),
+            getVideos(),
+            getSiteSettings()
+        ]);
+        
+        // Save to Firebase
+        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
+        // Save projects
+        for (const project of projects) {
+            await setDoc(doc(window.firestore, 'projects', project.id), project);
+        }
+        
+        // Save sections
+        for (const section of sections) {
+            await setDoc(doc(window.firestore, 'sections', section.id), section);
+        }
+        
+        // Save images
+        for (const image of images) {
+            await setDoc(doc(window.firestore, 'images', image.id), image);
+        }
+        
+        // Save videos
+        for (const video of videos) {
+            await setDoc(doc(window.firestore, 'videos', video.id), video);
+        }
+        
+        // Save site settings
+        if (siteSettings) {
+            await setDoc(doc(window.firestore, 'siteSettings', 'main'), siteSettings);
+        }
+        
+        console.log('Data migration to Firebase complete');
+    } catch (error) {
+        console.error('Error migrating data to Firebase:', error);
     }
 }
 
