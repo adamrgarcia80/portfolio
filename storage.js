@@ -412,73 +412,58 @@ async function getAllData() {
 
 // Projects
 async function getProjects() {
-    if (await useFirebase()) {
-        const firebaseData = await firebaseGet('projects');
-        // Also save to IndexedDB as backup
-        if (firebaseData.length > 0) {
+    // Try to load from JSONBin first
+    if (await useJsonbin()) {
+        const cloudData = await jsonbinLoad();
+        if (cloudData && cloudData.projects) {
+            // Sync to IndexedDB
             const database = await getDB();
             const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
             const store = transaction.objectStore(STORE_PROJECTS);
-            firebaseData.forEach(item => store.put(item));
+            cloudData.projects.forEach(item => store.put(item));
+            return cloudData.projects;
         }
-        return firebaseData;
     }
-    const database = await getDB();
-    return new Promise((resolve, reject) => {
-        const transaction = database.transaction([STORE_PROJECTS], 'readonly');
-        const store = transaction.objectStore(STORE_PROJECTS);
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result || []);
-        request.onerror = () => reject(request.error);
-    });
+    
+    // Fallback to IndexedDB
+    return await getProjectsFromIndexedDB();
 }
 
 async function getProject(id) {
-    if (await useFirebase()) {
-        const firebaseData = await firebaseGetDoc('projects', id);
-        if (firebaseData) {
-            // Also save to IndexedDB as backup
-            const database = await getDB();
-            const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
-            const store = transaction.objectStore(STORE_PROJECTS);
-            store.put(firebaseData);
-        }
-        return firebaseData;
-    }
-    const database = await getDB();
-    return new Promise((resolve, reject) => {
-        const transaction = database.transaction([STORE_PROJECTS], 'readonly');
-        const store = transaction.objectStore(STORE_PROJECTS);
-        const request = store.get(id);
-        request.onsuccess = () => resolve(request.result || null);
-        request.onerror = () => reject(request.error);
-    });
+    const projects = await getProjects();
+    return projects.find(p => p.id === id) || null;
 }
 
 async function saveProject(project) {
-    if (await useFirebase()) {
-        await firebaseSave('projects', project);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.put(project);
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve(request.result);
+        };
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteProject(id) {
-    if (await useFirebase()) {
-        await firebaseDelete('projects', id);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_PROJECTS], 'readwrite');
         const store = transaction.objectStore(STORE_PROJECTS);
         const request = store.delete(id);
-        request.onsuccess = () => resolve();
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve();
+        };
         request.onerror = () => reject(request.error);
     });
 }
