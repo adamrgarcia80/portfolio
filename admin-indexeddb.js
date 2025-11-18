@@ -450,9 +450,33 @@ async function uploadFile(type) {
         });
         
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Cloudinary upload error:', errorText);
-            throw new Error(`Cloudinary upload failed: ${response.status} ${response.statusText}`);
+            let errorMessage = `Cloudinary upload failed: ${response.status} ${response.statusText}`;
+            try {
+                const errorData = await response.json();
+                console.error('Cloudinary upload error:', errorData);
+                
+                if (errorData.error && errorData.error.message) {
+                    errorMessage += ` - ${errorData.error.message}`;
+                } else if (errorData.error) {
+                    errorMessage += ` - ${JSON.stringify(errorData.error)}`;
+                }
+                
+                // Common error messages
+                if (errorData.error && errorData.error.message) {
+                    if (errorData.error.message.includes('Invalid upload preset')) {
+                        errorMessage = 'Invalid upload preset. Make sure the preset name is correct and set to "Unsigned" mode.';
+                    } else if (errorData.error.message.includes('Invalid cloud name')) {
+                        errorMessage = 'Invalid cloud name. Check your Cloud Name in Cloudinary dashboard.';
+                    } else if (errorData.error.message.includes('unsigned')) {
+                        errorMessage = 'Upload preset must be set to "Unsigned" mode in Cloudinary settings.';
+                    }
+                }
+            } catch (e) {
+                const errorText = await response.text();
+                console.error('Cloudinary upload error (text):', errorText);
+                errorMessage += ` - ${errorText}`;
+            }
+            throw new Error(errorMessage);
         }
         
         const cloudinaryData = await response.json();
