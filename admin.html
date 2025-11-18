@@ -8,22 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vend+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        
-        // Firebase config - will be set by user
-        window.firebaseConfig = null;
-        window.firebaseApp = null;
-        window.firestore = null;
-        
-        window.initFirebase = function(config) {
-            window.firebaseConfig = config;
-            window.firebaseApp = initializeApp(config);
-            window.firestore = getFirestore(window.firebaseApp);
-        };
-    </script>
 </head>
 <body>
     <div class="admin-container">
@@ -119,23 +103,22 @@
                 </div>
             </div>
             
-            <!-- Firebase Configuration -->
+            <!-- Simple Cloud Sync -->
             <div class="admin-section">
-                <h2>Cloud Sync (Firebase)</h2>
-                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Configure Firebase to sync your portfolio data across all devices. <a href="https://console.firebase.google.com/" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then:</p>
+                <h2>Cloud Sync (Simple)</h2>
+                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Sync your portfolio across all devices. <a href="https://jsonbin.io/" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then:</p>
                 <ol style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit); padding-left: 1.5rem;">
-                    <li>Create a new Firebase project</li>
-                    <li>Enable Firestore Database (Build → Firestore Database → Create database → Start in test mode)</li>
-                    <li>Go to Project Settings → General → Your apps → Web app</li>
-                    <li>Copy the Firebase config object and paste it below</li>
+                    <li>Go to <a href="https://jsonbin.io/" target="_blank" style="color: var(--text-color); text-decoration: underline;">jsonbin.io</a> and sign up (free)</li>
+                    <li>Go to "API Keys" in your dashboard</li>
+                    <li>Copy your "Secret Key" and paste it below</li>
                 </ol>
                 <div class="form-group">
-                    <textarea id="firebaseConfig" placeholder='Paste Firebase config: { "apiKey": "...", "authDomain": "...", "projectId": "...", "storageBucket": "...", "messagingSenderId": "...", "appId": "..." }' style="min-height: 120px; font-family: monospace; font-size: 0.8rem;"></textarea>
+                    <input type="text" id="jsonbinApiKey" placeholder="Paste your JSONBin Secret Key" style="font-family: monospace; font-size: 0.9rem;" />
                 </div>
                 <div class="form-group">
-                    <button onclick="saveFirebaseConfigHandler()">Save Firebase Settings</button>
+                    <button onclick="saveJsonbinConfigHandler()">Save Sync Settings</button>
                 </div>
-                <div id="firebaseStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
+                <div id="jsonbinStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
             </div>
             
             <!-- Cloudinary Configuration -->

@@ -1,5 +1,5 @@
-// Storage manager with Firebase Firestore (for cross-device sync) and IndexedDB fallback
-// Images are stored in Cloudinary URLs, metadata syncs via Firebase
+// Storage manager with JSONBin.io (for cross-device sync) and IndexedDB fallback
+// Images are stored in Cloudinary URLs, metadata syncs via JSONBin.io
 
 const DB_NAME = 'portfolioDB';
 const DB_VERSION = 3;
@@ -10,77 +10,98 @@ const STORE_PROJECTS = 'projects';
 const STORE_SITE_SETTINGS = 'siteSettings';
 
 let db = null;
+let jsonbinBinId = null; // Store the bin ID for updates
 
-// Firebase helper functions
-async function useFirebase() {
+// JSONBin.io helper functions
+async function useJsonbin() {
     try {
-        // Check if Firebase is initialized
-        if (window.firestore) {
-            return true;
-        }
-        // Try to initialize from stored config
         const settings = await getSiteSettingsFromIndexedDB();
-        if (settings.firebaseConfig && window.initFirebase) {
-            window.initFirebase(settings.firebaseConfig);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            return !!window.firestore;
-        }
-        return false;
+        return settings.jsonbinApiKey ? true : false;
     } catch (error) {
-        console.error('Error checking Firebase:', error);
+        console.error('Error checking JSONBin:', error);
         return false;
     }
 }
 
-// Firebase operations (using Firestore)
-async function firebaseGet(collectionName) {
-    if (!window.firestore) return [];
-    try {
-        const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const ref = collection(window.firestore, collectionName);
-        const snapshot = await getDocs(query(ref, orderBy('order', 'asc')));
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error(`Error getting ${collectionName} from Firebase:`, error);
-        return [];
-    }
+async function getJsonbinApiKey() {
+    const settings = await getSiteSettingsFromIndexedDB();
+    return settings.jsonbinApiKey || null;
 }
 
-async function firebaseSave(collectionName, item) {
-    if (!window.firestore) return;
+// Load all data from JSONBin
+async function jsonbinLoad() {
+    const apiKey = await getJsonbinApiKey();
+    if (!apiKey) return null;
+    
     try {
-        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const ref = doc(window.firestore, collectionName, item.id);
-        await setDoc(ref, item);
-    } catch (error) {
-        console.error(`Error saving ${collectionName} to Firebase:`, error);
-    }
-}
-
-async function firebaseDelete(collectionName, id) {
-    if (!window.firestore) return;
-    try {
-        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const ref = doc(window.firestore, collectionName, id);
-        await deleteDoc(ref);
-    } catch (error) {
-        console.error(`Error deleting ${collectionName} from Firebase:`, error);
-    }
-}
-
-async function firebaseGetDoc(collectionName, docId) {
-    if (!window.firestore) return null;
-    try {
-        const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        const ref = doc(window.firestore, collectionName, docId);
-        const snapshot = await getDoc(ref);
-        if (snapshot.exists()) {
-            return { id: snapshot.id, ...snapshot.data() };
+        // First, try to get existing bin ID from settings
+        const settings = await getSiteSettingsFromIndexedDB();
+        if (settings.jsonbinBinId) {
+            jsonbinBinId = settings.jsonbinBinId;
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinBinId}`, {
+                headers: {
+                    'X-Master-Key': apiKey
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.record || null;
+            }
         }
         return null;
     } catch (error) {
-        console.error(`Error getting ${collectionName} doc from Firebase:`, error);
+        console.error('Error loading from JSONBin:', error);
         return null;
+    }
+}
+
+// Save all data to JSONBin
+async function jsonbinSave(allData) {
+    const apiKey = await getJsonbinApiKey();
+    if (!apiKey) return;
+    
+    try {
+        const settings = await getSiteSettingsFromIndexedDB();
+        
+        if (jsonbinBinId || settings.jsonbinBinId) {
+            // Update existing bin
+            const binId = jsonbinBinId || settings.jsonbinBinId;
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
+                },
+                body: JSON.stringify(allData)
+            });
+            
+            if (response.ok) {
+                console.log('Data saved to JSONBin');
+            }
+        } else {
+            // Create new bin
+            const response = await fetch('https://api.jsonbin.io/v3/b', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey,
+                    'X-Bin-Name': 'portfolio-data'
+                },
+                body: JSON.stringify(allData)
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                jsonbinBinId = data.metadata.id;
+                // Save bin ID to settings
+                settings.jsonbinBinId = jsonbinBinId;
+                await saveSiteSettingsToIndexedDB(settings);
+                console.log('New JSONBin created:', jsonbinBinId);
+            }
+        }
+    } catch (error) {
+        console.error('Error saving to JSONBin:', error);
     }
 }
 
@@ -91,7 +112,18 @@ async function getSiteSettingsFromIndexedDB() {
         const transaction = database.transaction([STORE_SITE_SETTINGS], 'readonly');
         const store = transaction.objectStore(STORE_SITE_SETTINGS);
         const request = store.get('main');
-        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [], cloudinaryConfig: {}, firebaseConfig: null });
+        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [], cloudinaryConfig: {}, jsonbinApiKey: null, jsonbinBinId: null });
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveSiteSettingsToIndexedDB(settings) {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
+        const store = transaction.objectStore(STORE_SITE_SETTINGS);
+        const request = store.put({ id: 'main', ...settings });
+        request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
 }
@@ -138,17 +170,20 @@ async function getDB() {
 
 // Sections
 async function getSections() {
-    if (await useFirebase()) {
-        const firebaseData = await firebaseGet('sections');
-        // Also save to IndexedDB as backup
-        if (firebaseData.length > 0) {
+    // Try to load from JSONBin first
+    if (await useJsonbin()) {
+        const cloudData = await jsonbinLoad();
+        if (cloudData && cloudData.sections) {
+            // Sync to IndexedDB
             const database = await getDB();
             const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
             const store = transaction.objectStore(STORE_SECTIONS);
-            firebaseData.forEach(item => store.put(item));
+            cloudData.sections.forEach(item => store.put(item));
+            return cloudData.sections;
         }
-        return firebaseData;
     }
+    
+    // Fallback to IndexedDB
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readonly');
@@ -160,46 +195,129 @@ async function getSections() {
 }
 
 async function saveSection(section) {
-    if (await useFirebase()) {
-        await firebaseSave('sections', section);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
         const store = transaction.objectStore(STORE_SECTIONS);
         const request = store.put(section);
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve(request.result);
+        };
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteSection(id) {
-    if (await useFirebase()) {
-        await firebaseDelete('sections', id);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_SECTIONS], 'readwrite');
         const store = transaction.objectStore(STORE_SECTIONS);
         const request = store.delete(id);
-        request.onsuccess = () => resolve();
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve();
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// Sync all data to JSONBin (exported for admin use)
+async function syncAllToJsonbin() {
+    if (!await useJsonbin()) return;
+    
+    try {
+        const [projects, sections, images, videos, siteSettings] = await Promise.all([
+            getProjectsFromIndexedDB(),
+            getSectionsFromIndexedDB(),
+            getImagesFromIndexedDB(),
+            getVideosFromIndexedDB(),
+            getSiteSettingsFromIndexedDB()
+        ]);
+        
+        await jsonbinSave({
+            projects,
+            sections,
+            images,
+            videos,
+            siteSettings
+        });
+    } catch (error) {
+        console.error('Error syncing to JSONBin:', error);
+        throw error;
+    }
+}
+
+// Make syncAllToJsonbin available globally for admin
+window.syncAllToJsonbin = syncAllToJsonbin;
+
+// Helper functions to get from IndexedDB directly
+async function getProjectsFromIndexedDB() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_PROJECTS], 'readonly');
+        const store = transaction.objectStore(STORE_PROJECTS);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getSectionsFromIndexedDB() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_SECTIONS], 'readonly');
+        const store = transaction.objectStore(STORE_SECTIONS);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getImagesFromIndexedDB() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_IMAGES], 'readonly');
+        const store = transaction.objectStore(STORE_IMAGES);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getVideosFromIndexedDB() {
+    const database = await getDB();
+    return new Promise((resolve, reject) => {
+        const transaction = database.transaction([STORE_VIDEOS], 'readonly');
+        const store = transaction.objectStore(STORE_VIDEOS);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
         request.onerror = () => reject(request.error);
     });
 }
 
 // Images
 async function getImages() {
-    if (await useFirebase()) {
-        const firebaseData = await firebaseGet('images');
-        // Also save to IndexedDB as backup
-        if (firebaseData.length > 0) {
+    // Try to load from JSONBin first
+    if (await useJsonbin()) {
+        const cloudData = await jsonbinLoad();
+        if (cloudData && cloudData.images) {
+            // Sync to IndexedDB
             const database = await getDB();
             const transaction = database.transaction([STORE_IMAGES], 'readwrite');
             const store = transaction.objectStore(STORE_IMAGES);
-            firebaseData.forEach(item => store.put(item));
+            cloudData.images.forEach(item => store.put(item));
+            return cloudData.images;
         }
-        return firebaseData;
     }
+    
+    // Fallback to IndexedDB
     const database = await getDB();
     return new Promise((resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readonly');
@@ -211,29 +329,35 @@ async function getImages() {
 }
 
 async function saveImage(image) {
-    if (await useFirebase()) {
-        await firebaseSave('images', image);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readwrite');
         const store = transaction.objectStore(STORE_IMAGES);
         const request = store.put(image);
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve(request.result);
+        };
         request.onerror = () => reject(request.error);
     });
 }
 
 async function deleteImage(id) {
-    if (await useFirebase()) {
-        await firebaseDelete('images', id);
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_IMAGES], 'readwrite');
         const store = transaction.objectStore(STORE_IMAGES);
         const request = store.delete(id);
-        request.onsuccess = () => resolve();
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve();
+        };
         request.onerror = () => reject(request.error);
     });
 }
@@ -377,32 +501,36 @@ async function getVideosForProject(projectId) {
     return videos.filter(vid => vid.projectId === projectId);
 }
 
-// Site Settings (bio text and footer links) - always use IndexedDB for settings
+// Site Settings (bio text and footer links)
 async function getSiteSettings() {
-    if (await useFirebase()) {
-        const firebaseData = await firebaseGetDoc('siteSettings', 'main');
-        if (firebaseData) {
-            // Also save to IndexedDB
+    // Try to load from JSONBin first
+    if (await useJsonbin()) {
+        const cloudData = await jsonbinLoad();
+        if (cloudData && cloudData.siteSettings) {
+            // Sync to IndexedDB
             const database = await getDB();
             const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
             const store = transaction.objectStore(STORE_SITE_SETTINGS);
-            store.put(firebaseData);
-            return firebaseData;
+            store.put(cloudData.siteSettings);
+            return cloudData.siteSettings;
         }
     }
     return await getSiteSettingsFromIndexedDB();
 }
 
 async function saveSiteSettings(settings) {
-    if (await useFirebase()) {
-        await firebaseSave('siteSettings', { id: 'main', ...settings });
-    }
     const database = await getDB();
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const transaction = database.transaction([STORE_SITE_SETTINGS], 'readwrite');
         const store = transaction.objectStore(STORE_SITE_SETTINGS);
         const request = store.put({ id: 'main', ...settings });
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = async () => {
+            // Sync to JSONBin
+            if (await useJsonbin()) {
+                await syncAllToJsonbin();
+            }
+            resolve(request.result);
+        };
         request.onerror = () => reject(request.error);
     });
 }

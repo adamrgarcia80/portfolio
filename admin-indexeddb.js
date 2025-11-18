@@ -611,14 +611,10 @@ async function loadSiteSettings() {
             }
         }
         
-        // Load Firebase config
-        const firebaseConfigTextarea = document.getElementById('firebaseConfig');
-        if (firebaseConfigTextarea && settings.firebaseConfig) {
-            firebaseConfigTextarea.value = JSON.stringify(settings.firebaseConfig, null, 2);
-            // Initialize Firebase if config exists
-            if (window.initFirebase) {
-                window.initFirebase(settings.firebaseConfig);
-            }
+        // Load JSONBin config
+        const jsonbinApiKeyInput = document.getElementById('jsonbinApiKey');
+        if (jsonbinApiKeyInput && settings.jsonbinApiKey) {
+            jsonbinApiKeyInput.value = settings.jsonbinApiKey;
         }
         
         // Load Cloudinary config
@@ -635,105 +631,35 @@ async function loadSiteSettings() {
     }
 }
 
-async function saveFirebaseConfigHandler() {
+async function saveJsonbinConfigHandler() {
     try {
-        const statusDiv = document.getElementById('firebaseStatus');
-        const configText = document.getElementById('firebaseConfig').value.trim();
+        const statusDiv = document.getElementById('jsonbinStatus');
+        const apiKey = document.getElementById('jsonbinApiKey').value.trim();
         
-        if (!configText) {
-            statusDiv.innerHTML = '<span class="error">Please paste your Firebase config</span>';
-            return;
-        }
-        
-        let firebaseConfig;
-        try {
-            firebaseConfig = JSON.parse(configText);
-        } catch (e) {
-            statusDiv.innerHTML = '<span class="error">Invalid JSON. Please check your Firebase config format.</span>';
-            return;
-        }
-        
-        // Validate required fields
-        if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-            statusDiv.innerHTML = '<span class="error">Invalid Firebase config. Missing required fields (apiKey, projectId).</span>';
+        if (!apiKey) {
+            statusDiv.innerHTML = '<span class="error">Please enter your JSONBin API key</span>';
             return;
         }
         
         // Save to site settings
         const settings = await getSiteSettings();
-        settings.firebaseConfig = firebaseConfig;
+        settings.jsonbinApiKey = apiKey;
         await saveSiteSettings(settings);
         
-        // Initialize Firebase
-        if (window.initFirebase) {
-            window.initFirebase(firebaseConfig);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            if (window.firestore) {
-                statusDiv.innerHTML = '<span class="success">Firebase connected! Your data will now sync across all devices.</span>';
-                
-                // Migrate existing data to Firebase
-                statusDiv.innerHTML += '<br><span style="opacity: 0.7; font-size: 0.85rem;">Migrating existing data to Firebase...</span>';
-                await migrateDataToFirebase();
-                statusDiv.innerHTML = '<span class="success">Firebase connected and data migrated! Your portfolio will now sync across all devices.</span>';
-            } else {
-                statusDiv.innerHTML = '<span class="error">Firebase config saved but initialization failed. Check browser console for errors.</span>';
-            }
-        } else {
-            statusDiv.innerHTML = '<span class="error">Firebase SDK not loaded. Please refresh the page.</span>';
-        }
+        // Test the connection and migrate data
+        statusDiv.innerHTML = '<span>Testing connection and syncing data...</span>';
+        
+        // Sync existing data to JSONBin
+        await syncAllToJsonbin();
+        
+        statusDiv.innerHTML = '<span class="success">JSONBin connected! Your portfolio will now sync across all devices.</span>';
         
         setTimeout(() => {
             statusDiv.innerHTML = '';
         }, 5000);
     } catch (error) {
-        console.error('Error saving Firebase config:', error);
-        document.getElementById('firebaseStatus').innerHTML = '<span class="error">Error saving Firebase config: ' + error.message + '</span>';
-    }
-}
-
-async function migrateDataToFirebase() {
-    try {
-        // Get all existing data from IndexedDB
-        const [projects, sections, images, videos, siteSettings] = await Promise.all([
-            getProjects(),
-            getSections(),
-            getImages(),
-            getVideos(),
-            getSiteSettings()
-        ]);
-        
-        // Save to Firebase
-        const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        
-        // Save projects
-        for (const project of projects) {
-            await setDoc(doc(window.firestore, 'projects', project.id), project);
-        }
-        
-        // Save sections
-        for (const section of sections) {
-            await setDoc(doc(window.firestore, 'sections', section.id), section);
-        }
-        
-        // Save images
-        for (const image of images) {
-            await setDoc(doc(window.firestore, 'images', image.id), image);
-        }
-        
-        // Save videos
-        for (const video of videos) {
-            await setDoc(doc(window.firestore, 'videos', video.id), video);
-        }
-        
-        // Save site settings
-        if (siteSettings) {
-            await setDoc(doc(window.firestore, 'siteSettings', 'main'), siteSettings);
-        }
-        
-        console.log('Data migration to Firebase complete');
-    } catch (error) {
-        console.error('Error migrating data to Firebase:', error);
+        console.error('Error saving JSONBin config:', error);
+        document.getElementById('jsonbinStatus').innerHTML = '<span class="error">Error: ' + error.message + '</span>';
     }
 }
 

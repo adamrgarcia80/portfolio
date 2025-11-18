@@ -8,22 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vend+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        
-        // Firebase config - will be set by user
-        window.firebaseConfig = null;
-        window.firebaseApp = null;
-        window.firestore = null;
-        
-        window.initFirebase = function(config) {
-            window.firebaseConfig = config;
-            window.firebaseApp = initializeApp(config);
-            window.firestore = getFirestore(window.firebaseApp);
-        };
-    </script>
 </head>
 <body>
     <div class="container">
