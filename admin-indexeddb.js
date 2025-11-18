@@ -435,12 +435,29 @@ async function uploadFile(type) {
             return;
         }
         
+        // Validate and trim inputs
+        const cloudName = cloudinaryConfig.cloudName.trim();
+        const uploadPreset = cloudinaryConfig.uploadPreset.trim();
+        
+        if (!cloudName || !uploadPreset) {
+            statusDiv.innerHTML = '<span class="error">Cloud Name and Upload Preset cannot be empty. Please check your settings.</span>';
+            return;
+        }
+        
         // Upload to Cloudinary
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+        formData.append('upload_preset', uploadPreset);
         
-        const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
+        const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+        
+        console.log('Uploading to Cloudinary:', {
+            cloudName: cloudName,
+            uploadPreset: uploadPreset,
+            url: uploadUrl,
+            fileName: file.name,
+            fileSize: file.size
+        });
         
         statusDiv.innerHTML = '<span>Uploading to Cloudinary...</span>';
         
@@ -449,37 +466,53 @@ async function uploadFile(type) {
             body: formData
         });
         
+        console.log('Cloudinary response status:', response.status, response.statusText);
+        
         if (!response.ok) {
             let errorMessage = `Cloudinary upload failed: ${response.status} ${response.statusText}`;
+            let errorDetails = '';
+            
             try {
-                const errorData = await response.json();
-                console.error('Cloudinary upload error:', errorData);
-                
-                if (errorData.error && errorData.error.message) {
-                    errorMessage += ` - ${errorData.error.message}`;
-                } else if (errorData.error) {
-                    errorMessage += ` - ${JSON.stringify(errorData.error)}`;
+                // Try to get error as JSON first
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    console.error('Cloudinary upload error (JSON):', errorData);
+                    
+                    if (errorData.error) {
+                        if (errorData.error.message) {
+                            errorDetails = errorData.error.message;
+                        } else {
+                            errorDetails = JSON.stringify(errorData.error);
+                        }
+                    }
+                } else {
+                    // Try as text
+                    const errorText = await response.text();
+                    console.error('Cloudinary upload error (text):', errorText);
+                    errorDetails = errorText;
                 }
                 
-                // Common error messages
-                if (errorData.error && errorData.error.message) {
-                    if (errorData.error.message.includes('Invalid upload preset')) {
-                        errorMessage = 'Invalid upload preset. Make sure the preset name is correct and set to "Unsigned" mode.';
-                    } else if (errorData.error.message.includes('Invalid cloud name')) {
-                        errorMessage = 'Invalid cloud name. Check your Cloud Name in Cloudinary dashboard.';
-                    } else if (errorData.error.message.includes('unsigned')) {
-                        errorMessage = 'Upload preset must be set to "Unsigned" mode in Cloudinary settings.';
-                    }
+                // Provide specific guidance based on error
+                if (errorDetails.includes('Invalid upload preset') || errorDetails.includes('upload preset')) {
+                    errorMessage = 'Invalid upload preset. Check that: 1) The preset name is spelled correctly (case-sensitive), 2) The preset exists in your Cloudinary account, 3) The preset is set to "Unsigned" mode.';
+                } else if (errorDetails.includes('Invalid cloud name') || errorDetails.includes('cloud name')) {
+                    errorMessage = 'Invalid cloud name. Check your Cloud Name in the Cloudinary dashboard (top of the page).';
+                } else if (errorDetails.includes('unsigned') || errorDetails.includes('signature')) {
+                    errorMessage = 'Upload preset must be set to "Unsigned" mode. Go to Settings → Upload → Upload presets and set "Signing mode" to "Unsigned".';
+                } else if (errorDetails) {
+                    errorMessage = `Upload failed: ${errorDetails}`;
                 }
             } catch (e) {
-                const errorText = await response.text();
-                console.error('Cloudinary upload error (text):', errorText);
-                errorMessage += ` - ${errorText}`;
+                console.error('Error parsing error response:', e);
+                errorMessage += '. Check browser console (F12) for details.';
             }
+            
             throw new Error(errorMessage);
         }
         
         const cloudinaryData = await response.json();
+        console.log('Cloudinary upload success:', cloudinaryData);
         
         if (!cloudinaryData.secure_url) {
             throw new Error('Cloudinary did not return a secure URL');
