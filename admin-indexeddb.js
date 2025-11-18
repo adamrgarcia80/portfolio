@@ -431,7 +431,7 @@ async function uploadFile(type) {
         const cloudinaryConfig = await getCloudinaryConfig();
         
         if (!cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
-            statusDiv.innerHTML = '<span class="error">Please configure Cloudinary settings first</span>';
+            statusDiv.innerHTML = '<span class="error">Please configure Cloudinary settings first. Go to "Cloud Storage (Cloudinary)" section below.</span>';
             return;
         }
         
@@ -442,16 +442,24 @@ async function uploadFile(type) {
         
         const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
         
+        statusDiv.innerHTML = '<span>Uploading to Cloudinary...</span>';
+        
         const response = await fetch(uploadUrl, {
             method: 'POST',
             body: formData
         });
         
         if (!response.ok) {
-            throw new Error('Cloudinary upload failed');
+            const errorText = await response.text();
+            console.error('Cloudinary upload error:', errorText);
+            throw new Error(`Cloudinary upload failed: ${response.status} ${response.statusText}`);
         }
         
         const cloudinaryData = await response.json();
+        
+        if (!cloudinaryData.secure_url) {
+            throw new Error('Cloudinary did not return a secure URL');
+        }
         
         const layout = document.getElementById('imageLayout').value;
         
@@ -493,7 +501,15 @@ async function uploadFile(type) {
         }, 2000);
     } catch (error) {
         console.error('Error uploading file:', error);
-        statusDiv.innerHTML = '<span class="error">Upload failed. Check Cloudinary settings.</span>';
+        let errorMessage = 'Upload failed. ';
+        if (error.message.includes('Cloudinary')) {
+            errorMessage += error.message;
+        } else if (error.message.includes('configure')) {
+            errorMessage += 'Please configure Cloudinary settings in the "Cloud Storage (Cloudinary)" section.';
+        } else {
+            errorMessage += 'Check Cloudinary settings and ensure your upload preset is set to "Unsigned" in Cloudinary dashboard.';
+        }
+        statusDiv.innerHTML = `<span class="error">${errorMessage}</span>`;
     }
 }
 
