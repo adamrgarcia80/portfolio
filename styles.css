@@ -129,6 +129,10 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     gap: calc(var(--spacing-unit) * 1.5);
 }
 
+.nav-menu-toggle {
+    display: none;
+}
+
 .nav-links a {
     color: var(--text-color) !important;
     text-decoration: none;
@@ -178,12 +182,8 @@ main {
 
 /* Sections - Modem style */
 .section {
-    margin-bottom: calc(var(--spacing-unit) * 6);
-    padding: calc(var(--spacing-unit) * 3) 0;
-}
-
-.section:first-of-type {
-    border-top: none;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    padding: calc(var(--spacing-unit) * 1.5) 0;
 }
 
 .section-label {
@@ -210,7 +210,7 @@ main {
 .work-pillars {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--spacing-unit) * 4);
+    gap: calc(var(--spacing-unit) * 2);
     max-width: var(--content-width);
 }
 
