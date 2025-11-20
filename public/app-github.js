@@ -248,21 +248,28 @@ function initMobileMenu() {
     const toggle = document.getElementById('navToggle');
     const links = document.getElementById('navLinks');
     
-    if (!toggle || !links) return;
+    if (!toggle || !links) {
+        console.warn('Mobile menu elements not found');
+        return;
+    }
     
     // Toggle menu on button click
     toggle.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        const isActive = links.classList.contains('active');
         links.classList.toggle('active');
         toggle.classList.toggle('active');
+        console.log('Menu toggled, active:', !isActive);
     });
     
-    // Close menu when clicking outside
+    // Close menu when clicking outside (with slight delay to avoid immediate close)
     document.addEventListener('click', (event) => {
-        if (!links.contains(event.target) && !toggle.contains(event.target)) {
-            links.classList.remove('active');
-            toggle.classList.remove('active');
+        if (links.classList.contains('active')) {
+            if (!links.contains(event.target) && !toggle.contains(event.target)) {
+                links.classList.remove('active');
+                toggle.classList.remove('active');
+            }
         }
     });
     

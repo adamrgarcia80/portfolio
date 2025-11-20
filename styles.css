@@ -551,8 +551,9 @@ footer {
     
     .nav-links {
         position: fixed;
-        top: calc(var(--spacing-unit) + 40px + 0.5rem);
-        left: var(--spacing-unit);
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%) translateX(-100%);
         width: 200px;
         max-width: 60vw;
         padding: var(--spacing-unit);
@@ -561,8 +562,7 @@ footer {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        border-radius: 4px;
-        transform: translateX(-100%);
+        border-radius: 0 4px 4px 0;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease-out, transform 0.3s ease-out;
@@ -571,7 +571,7 @@ footer {
     
     .nav-links.active {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(-50%) translateX(0);
         pointer-events: auto;
     }
     
