@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Setup - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vend+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .setup-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--text-color);
+            color: var(--bg-color);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+        .step h3 {
+            display: inline-block;
+            margin: 0;
+        }
+        .step-content {
+            margin-top: 1rem;
+            opacity: 0.9;
+        }
+        .step-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .step-content a {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+        .test-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status {
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 3px;
+        }
+        .status.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        .status.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        .status.info {
+            background: rgba(0, 150, 255, 0.1);
+            border: 1px solid rgba(0, 150, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>GitHub Setup Wizard</h1>
+        <p style="opacity: 0.7; margin-bottom: 2rem;">Follow these steps to connect your portfolio to GitHub</p>
+        
+        <!-- Step 1: Create Repository -->
+        <div class="step">
+            <span class="step-number">1</span>
+            <h3>Use Your Existing GitHub Repository</h3>
+            <div class="step-content">
+                <p>You can use an existing repository (like <code>portfolio</code>) or create a new one:</p>
+                <ul>
+                    <li><strong>Using existing repo:</strong> Just make sure you know your GitHub username and the repo name</li>
+                    <li><strong>Creating new repo:</strong> Go to <a href="https://github.com/new" target="_blank">github.com/new</a> and create one</li>
+                </ul>
+                <p><strong>Note:</strong> The portfolio will create an <code>images/</code> folder and a <code>content.json</code> file in your repo. If these already exist, they'll be updated.</p>
+            </div>
+        </div>
+        
+        <!-- Step 2: Create Token -->
+        <div class="step">
+            <span class="step-number">2</span>
+            <h3>Create a Personal Access Token</h3>
+            <div class="step-content">
+                <p>You need a token to upload files to GitHub:</p>
+                <ol>
+                    <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank">GitHub Token Settings</a></li>
+                    <li>Give it a name like "Portfolio Admin"</li>
+                    <li>Select <strong>Expiration</strong> (90 days, 1 year, or no expiration)</li>
+                    <li>Check the <strong><code>repo</code></strong> scope (this gives full repository access)</li>
+                    <li>Scroll down and click <strong>"Generate token"</strong></li>
+                    <li><strong>IMPORTANT:</strong> Copy the token immediately (it starts with <code>ghp_</code>) - you won't see it again!</li>
+                </ol>
+                <div class="status info">
+                    <strong>💡 Tip:</strong> Keep this token safe. It's like a password for your repository.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 3: Configure -->
+        <div class="step">
+            <span class="step-number">3</span>
+            <h3>Configure Your Portfolio</h3>
+            <div class="step-content">
+                <p>Enter your GitHub information below:</p>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">GitHub Username</label>
+                    <input type="text" id="githubOwner" placeholder="your-username" style="width: 100%; padding: 0.75rem;" />
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Repository Name</label>
+                    <input type="text" id="githubRepo" placeholder="portfolio" value="portfolio" style="width: 100%; padding: 0.75rem;" />
+                    <small style="opacity: 0.6; display: block; margin-top: 0.5rem;">Your existing repository name (e.g., "portfolio")</small>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Branch Name</label>
+                    <input type="text" id="githubBranch" placeholder="main" value="main" style="width: 100%; padding: 0.75rem;" />
+                    <small style="opacity: 0.6; display: block; margin-top: 0.5rem;">Usually "main" or "master"</small>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Personal Access Token</label>
+                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" style="width: 100%; padding: 0.75rem;" />
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem;">Images Folder (optional)</label>
+                    <input type="text" id="githubImagesFolder" placeholder="images" value="images" style="width: 100%; padding: 0.75rem;" />
+                </div>
+                
+                <button onclick="testAndSave()" style="width: 100%; margin-top: 1.5rem; padding: 0.75rem;">Test Connection & Save</button>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="test-section" id="testResults" style="display: none;">
+            <h3>Connection Test</h3>
+            <div id="testStatus"></div>
+        </div>
+        
+        <!-- Step 4: Done -->
+        <div class="step" id="doneStep" style="display: none;">
+            <span class="step-number">✓</span>
+            <h3>Setup Complete!</h3>
+            <div class="step-content">
+                <p>Your portfolio is now connected to GitHub! You can:</p>
+                <ul>
+                    <li>Go to <a href="admin.html">Admin Panel</a> to start adding projects</li>
+                    <li>Upload images - they'll be stored in your GitHub repo</li>
+                    <li>Edit content - changes sync to GitHub automatically</li>
+                </ul>
+                <a href="admin.html" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--text-color); color: var(--bg-color); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Go to Admin Panel →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="github-config.js"></script>
+    <script>
+        async function testAndSave() {
+            const owner = document.getElementById('githubOwner').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const branch = document.getElementById('githubBranch').value.trim() || 'main';
+            const token = document.getElementById('githubToken').value.trim();
+            const imagesFolder = document.getElementById('githubImagesFolder').value.trim() || 'images';
+            
+            if (!owner || !repo || !token) {
+                showStatus('error', 'Please fill in all required fields');
+                return;
+            }
+            
+            const config = { owner, repo, branch, token, imagesFolder };
+            saveGitHubConfig(config);
+            
+            // Show test section
+            document.getElementById('testResults').style.display = 'block';
+            showStatus('info', 'Testing connection...');
+            
+            try {
+                // Test 1: Try to access the repository
+                const repoResponse = await fetch(
+                    `https://api.github.com/repos/${owner}/${repo}`,
+                    {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+                
+                if (!repoResponse.ok) {
+                    if (repoResponse.status === 404) {
+                        throw new Error('Repository not found. Check your username and repository name.');
+                    } else if (repoResponse.status === 401) {
+                        throw new Error('Invalid token. Check your Personal Access Token.');
+                    } else {
+                        throw new Error(`GitHub API error: ${repoResponse.status}`);
+                    }
+                }
+                
+                // Test 2: Try to read/create content.json
+                try {
+                    await getContentFromGitHub();
+                    showStatus('success', '✓ Connection successful! Repository found and accessible.');
+                } catch (e) {
+                    // If content.json doesn't exist, that's okay - we'll create it
+                    if (e.message.includes('404') || e.message.includes('not found')) {
+                        showStatus('success', '✓ Connection successful! Repository found. (content.json will be created on first save)');
+                    } else {
+                        throw e;
+                    }
+                }
+                
+                // Show done step
+                document.getElementById('doneStep').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                showStatus('error', `✗ Connection failed: ${error.message}`);
+            }
+        }
+        
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('testStatus');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        // Check if already configured
+        window.addEventListener('DOMContentLoaded', () => {
+            const config = getGitHubConfig();
+            if (config) {
+                document.getElementById('githubOwner').value = config.owner || '';
+                document.getElementById('githubRepo').value = config.repo || '';
+                document.getElementById('githubBranch').value = config.branch || 'main';
+                document.getElementById('githubImagesFolder').value = config.imagesFolder || 'images';
+                // Don't pre-fill token for security
+            }
+        });
+    </script>
+</body>
+</html>
+
