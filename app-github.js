@@ -2,37 +2,46 @@
 
 const GITHUB_CONFIG_KEY = 'githubConfig';
 
-// Symbolic Systems Projects (lorem ipsum placeholder data)
+// Symbolic Systems Body Copy
+const SYMBOLIC_SYSTEMS_BODY = 'Works exploring how design, storytelling, and speculative futures can reframe meaning in a world where creativity must evolve beyond traditional models. These projects investigate emergent symbolic systems, myth-making in digital spaces, and the role of narrative in shaping collective understanding.';
+
+// Symbolic Systems Projects with sample copy and images
 const SYMBOLIC_PROJECTS = [
     {
         id: 'symbolic-1',
-        title: 'Mythic Architectures',
-        caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.'
+        title: 'mutant.systems',
+        caption: 'A workshop and lecture series examining systems thinking, purpose-driven design, and decentralized organizational structures. Explores how alternative frameworks can reshape creative practice and cultural production.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPm11dGFudC5zeXN0ZW1zPC90ZXh0Pjwvc3ZnPg=='
     },
     {
         id: 'symbolic-2',
-        title: 'Ritual Networks',
-        caption: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.'
+        title: 'mythseed.world',
+        caption: 'An online and offline environment for evolving symbolic myth systems. A collaborative platform where participants contribute to and transform shared narratives, creating emergent meaning through collective participation.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPm15dGhzZWVkLndvcmxkPC90ZXh0Pjwvc3ZnPg=='
     },
     {
         id: 'symbolic-3',
-        title: 'Sacred Algorithms',
-        caption: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.'
+        title: 'Lore Core',
+        caption: 'Research and generative framework around emergent cults and religions in post-apocalyptic fictions. Investigates how narrative structures create belief systems and how fictional cosmologies mirror real-world symbolic practices.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvcmUgQ29yZTwvdGV4dD48L3N2Zz4='
     },
     {
         id: 'symbolic-4',
-        title: 'Divine Interfaces',
-        caption: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'
+        title: 'Supplication',
+        caption: 'An interactive installation exploring ritual, devotion, and digital prayer. Examines how ancient forms of supplication translate into contemporary networked spaces and what it means to make offerings in a dematerialized world.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlN1cHBsaWNhdGlvbjwvdGV4dD48L3N2Zz4='
     },
     {
         id: 'symbolic-5',
-        title: 'Transcendent Systems',
-        caption: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt.'
+        title: 'Public Dreams',
+        caption: 'A series of collective dreaming experiments conducted in public spaces. Participants share and remix dream narratives, creating a shared unconscious that reflects collective anxieties, desires, and symbolic language.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlB1YmxpYyBEcmVhbXM8L3RleHQ+PC9zdmc+'
     },
     {
         id: 'symbolic-6',
-        title: 'Eternal Structures',
-        caption: 'Ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.'
+        title: 'Echo Chamber',
+        caption: 'An investigation into how symbolic systems reinforce themselves through repetition and resonance. Explores the architecture of belief, the mechanics of consensus, and how meaning becomes fixed through recursive patterns.',
+        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zKSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVjaG8gQ2hhbWJlcjwvdGV4dD48L3N2Zz4='
     }
 ];
 
@@ -101,6 +110,15 @@ async function loadContent() {
 
 // Load Symbolic Systems Projects
 function loadSymbolicProjects() {
+    // Load body copy
+    const bodyContainer = document.getElementById('symbolicSystemsBody');
+    if (bodyContainer) {
+        const bodyParagraph = document.createElement('p');
+        bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
+        bodyContainer.appendChild(bodyParagraph);
+    }
+    
+    // Load projects
     const container = document.getElementById('symbolicProjects');
     if (!container) return;
     
@@ -110,10 +128,20 @@ function loadSymbolicProjects() {
         const projectDiv = document.createElement('div');
         projectDiv.className = 'symbolic-project';
         
-        // Image placeholder
+        // Image
         const imageDiv = document.createElement('div');
         imageDiv.className = 'symbolic-project-image';
-        imageDiv.textContent = 'Image';
+        if (project.image) {
+            const img = document.createElement('img');
+            img.src = project.image;
+            img.alt = project.title;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            imageDiv.appendChild(img);
+        } else {
+            imageDiv.textContent = 'Image';
+        }
         
         // Title with link
         const titleDiv = document.createElement('div');
@@ -294,7 +322,7 @@ function loadPillarProjects(pillarType, projects) {
 // Animate all text word-by-word from top-left to bottom-right on initial load
 function animateAllText() {
     // Get all text-containing elements (excluding menu and already animated)
-    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .pillar-title, .pillar-description, .brand-node, .pillar-project-title, .pillar-project-meta, .essay-title, .essay-excerpt, .contact-content, .practice-text, .section-label, .nav-logo');
+    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .pillar-title, .pillar-description, .brand-node, .pillar-project-title, .pillar-project-meta, .essay-title, .essay-excerpt, .contact-content, .practice-text, .section-label, .nav-logo, .subsection-title, .subsection-body p, .symbolic-project-title, .symbolic-project-caption');
     
     const allWords = [];
     

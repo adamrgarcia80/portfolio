@@ -337,6 +337,18 @@ main {
     letter-spacing: 0.05em;
 }
 
+.subsection-body {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    max-width: 110ch;
+}
+
+.subsection-body p {
+    font-size: 1rem !important;
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
 /* Symbolic Systems Grid */
 .symbolic-projects-grid {
     display: grid;
@@ -360,6 +372,14 @@ main {
     justify-content: center;
     color: rgba(255, 255, 255, 0.3);
     font-size: 0.9rem;
+    overflow: hidden;
+}
+
+.symbolic-project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .symbolic-project-title {
