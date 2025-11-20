@@ -81,11 +81,18 @@ p, div, span, a, li, td, th, label, button, input, textarea, select, h1, h2, h3,
     color: var(--text-color) !important;
 }
 
-/* Headers use underline instead of bold */
+/* Headers use dash prefix instead of underline */
 h1, h2, h3, h4, h5, h6, .section-label, .pillar-title, .pillar-project-title, .essay-title, .nav-logo {
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.25rem;
+}
+
+.section-label::before,
+.pillar-title::before,
+.pillar-project-title::before,
+.essay-title::before,
+.hero-title::before {
+    content: "— ";
 }
 
 /* Regular text */
@@ -136,8 +143,8 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 .nav-logo {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     color: var(--text-color) !important;
+    text-decoration: none;
     letter-spacing: 0.05em;
 }
 
@@ -191,7 +198,6 @@ main {
 .hero-title {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     line-height: 1.6;
     margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
@@ -212,7 +218,6 @@ main {
 .section-label {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
 }
@@ -245,7 +250,6 @@ main {
 .pillar-title {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.25rem;
     letter-spacing: 0.05em;
 }
@@ -271,7 +275,6 @@ main {
 
 .brand-node strong {
     font-weight: 300;
-    text-decoration: underline;
 }
 
 .brand-node:last-child {
@@ -302,7 +305,6 @@ main {
 .pillar-project-title {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.25rem;
 }
 
@@ -334,7 +336,6 @@ main {
 .essay-title {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.25rem;
 }
 
@@ -399,18 +400,24 @@ footer {
 .content-section .text-header {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.25rem;
     text-align: left;
+}
+
+.content-section .text-header::before {
+    content: "— ";
 }
 
 .content-section .text-body-bold {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
     text-align: left;
+}
+
+.content-section .text-body-bold::before {
+    content: "— ";
 }
 
 .content-section .text-body-regular {
@@ -504,66 +511,82 @@ footer {
     
     .main-nav {
         position: fixed;
-        top: var(--spacing-unit);
-        right: var(--spacing-unit);
-        left: auto;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: var(--spacing-unit);
+        top: 0;
+        left: 0;
+        right: 0;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-unit);
     }
     
     .nav-logo {
-        display: none;
+        display: block;
+        position: fixed;
+        top: var(--spacing-unit);
+        left: var(--spacing-unit);
+        z-index: 1002;
     }
     
     .nav-menu-toggle {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
+        position: fixed;
+        top: var(--spacing-unit);
+        right: var(--spacing-unit);
+        width: 40px;
+        height: 40px;
+        background: transparent;
         border: none;
-        color: var(--text-color);
-        font-size: 1rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 1001;
-        transition: background 0.2s;
+        padding: 0;
     }
     
-    .nav-menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.2);
+    .menu-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--text-color);
+        display: block;
+        transition: transform 0.3s ease;
     }
     
-    .nav-menu-toggle.active {
-        background: rgba(255, 255, 255, 0.2);
+    .nav-menu-toggle.active .menu-circle {
+        transform: scale(0.8);
+        opacity: 0.8;
     }
     
     .nav-links {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background: rgba(0, 0, 0, 0.9);
-        padding: var(--spacing-unit);
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        padding: calc(var(--spacing-unit) * 3) var(--spacing-unit) var(--spacing-unit);
         flex-direction: column;
         gap: var(--spacing-unit);
-        min-width: 200px;
-        display: none;
+        transition: right 0.3s ease-out;
+        z-index: 1000;
+        overflow-y: auto;
     }
     
     .nav-links.active {
-        display: flex;
+        right: 0;
     }
     
     .nav-links a {
         text-align: left;
         width: 100%;
-        padding: 0.5rem;
+        padding: 0.75rem;
+        font-size: 1rem;
     }
     
     main {
         margin-top: 0;
+        padding-top: calc(var(--spacing-unit) * 2);
     }
     
     .two-column-grid {
@@ -616,9 +639,12 @@ footer {
 .admin-header h1 {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     letter-spacing: 0.05em;
     margin-bottom: var(--spacing-unit);
+}
+
+.admin-header h1::before {
+    content: "— ";
 }
 
 .auth-form {
@@ -659,9 +685,12 @@ footer {
 .admin-section h2 {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: var(--spacing-unit);
     letter-spacing: 0.03em;
+}
+
+.admin-section h2::before {
+    content: "— ";
 }
 
 .form-group {
@@ -764,9 +793,12 @@ button:hover {
 .section-item h3 {
     font-size: 1rem !important;
     font-weight: 300;
-    text-decoration: underline;
     margin-bottom: 0.5rem;
     letter-spacing: 0.03em;
+}
+
+.section-item h3::before {
+    content: "— ";
 }
 
 .section-item p {

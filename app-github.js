@@ -253,21 +253,34 @@ function initPortal() {
     let currentX = 0;
     let currentY = 0;
     
-    // Smooth mouse following with easing
+    // Smooth mouse following with easing and more dynamism
     function updatePortalPosition() {
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
         
-        // Calculate target offset from mouse position
-        targetX = (mouseX - centerX) * 0.2;
-        targetY = (mouseY - centerY) * 0.2;
+        // Calculate target offset from mouse position with more dynamic response
+        const distanceX = mouseX - centerX;
+        const distanceY = mouseY - centerY;
+        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
+        const normalizedDistance = Math.min(distance / maxDistance, 1);
         
-        // Smooth interpolation
-        currentX += (targetX - currentX) * 0.1;
-        currentY += (targetY - currentY) * 0.1;
+        // More dynamic following - stronger when mouse is further from center
+        const followStrength = 0.15 + (normalizedDistance * 0.15);
+        targetX = distanceX * followStrength;
+        targetY = distanceY * followStrength;
         
-        portal.style.left = `calc(50% + ${currentX}px)`;
-        portal.style.top = `calc(50% + ${currentY}px)`;
+        // Smooth interpolation with slight overshoot for dynamism
+        const easeFactor = 0.08;
+        currentX += (targetX - currentX) * easeFactor;
+        currentY += (targetY - currentY) * easeFactor;
+        
+        // Add subtle random drift for more organic movement
+        const driftX = (Math.random() - 0.5) * 2;
+        const driftY = (Math.random() - 0.5) * 2;
+        
+        portal.style.left = `calc(50% + ${currentX + driftX}px)`;
+        portal.style.top = `calc(50% + ${currentY + driftY}px)`;
         
         requestAnimationFrame(updatePortalPosition);
     }
