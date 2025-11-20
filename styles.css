@@ -134,6 +134,18 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     display: none;
 }
 
+.menu-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.65);
+}
+
 .nav-menu-toggle:focus-visible {
     outline: 1px solid rgba(255, 255, 255, 0.7);
     outline-offset: 4px;
@@ -515,15 +527,7 @@ footer {
     }
     
     .menu-circle {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: #ffffff;
-        display: block;
-        position: relative;
-        z-index: 1;
-        transition: transform 0.3s ease;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.65);
+        box-shadow: none;
     }
 
     .nav-menu-toggle.active .menu-circle {
