@@ -466,41 +466,59 @@ function initMobileMenu() {
         return;
     }
     
-    console.log('Initializing mobile menu', { toggle, links });
+    console.log('Initializing mobile menu');
     
-    // Toggle menu on button click
-    toggle.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log('Toggle clicked');
-        const wasActive = links.classList.contains('active');
-        links.classList.toggle('active');
-        toggle.classList.toggle('active');
-        console.log('Menu toggled. Now active:', !wasActive);
-        console.log('Links classes:', links.className);
+    // Simple toggle function
+    function toggleMenu() {
+        const isActive = links.classList.contains('active');
+        if (isActive) {
+            links.classList.remove('active');
+            toggle.classList.remove('active');
+            console.log('Menu closed');
+        } else {
+            links.classList.add('active');
+            toggle.classList.add('active');
+            console.log('Menu opened');
+        }
+    }
+    
+    // Toggle menu on button click - use both click and mousedown for reliability
+    toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Button clicked');
+        toggleMenu();
+    });
+    
+    toggle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
     });
     
     // Close menu when clicking outside
-    document.addEventListener('click', (event) => {
-        const isMenuActive = links.classList.contains('active');
-        if (isMenuActive) {
-            const clickedInsideMenu = links.contains(event.target);
-            const clickedToggle = toggle.contains(event.target);
-            if (!clickedInsideMenu && !clickedToggle) {
-                console.log('Closing menu - clicked outside');
+    document.addEventListener('click', function(e) {
+        if (links.classList.contains('active')) {
+            if (!links.contains(e.target) && !toggle.contains(e.target) && !toggle.querySelector('.menu-circle')?.contains(e.target)) {
                 links.classList.remove('active');
                 toggle.classList.remove('active');
+                console.log('Menu closed - clicked outside');
             }
         }
     });
     
     // Close menu when clicking a link
-    links.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            console.log('Closing menu - link clicked');
+    const menuLinks = links.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
             links.classList.remove('active');
             toggle.classList.remove('active');
+            console.log('Menu closed - link clicked');
         });
+    });
+    
+    // Also handle touch events for mobile
+    toggle.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        toggleMenu();
     });
 }
 
