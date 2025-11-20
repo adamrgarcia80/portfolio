@@ -260,17 +260,19 @@ function initPortal() {
     });
     
     document.addEventListener('click', (e) => {
-        // Pulse effect on click
+        // Pulse effect on click - brighter red/orange
         portal.style.width = '1000px';
         portal.style.height = '1000px';
         portal.style.margin = '-500px 0 0 -500px';
-        portal.style.opacity = '0.9';
+        portal.style.opacity = '1';
+        portal.style.background = 'radial-gradient(circle, rgba(255, 120, 60, 1) 0%, rgba(255, 160, 90, 0.7) 30%, rgba(220, 100, 50, 0.4) 50%, transparent 70%)';
         
         setTimeout(() => {
             portal.style.width = '800px';
             portal.style.height = '800px';
             portal.style.margin = '-400px 0 0 -400px';
-            portal.style.opacity = '0.7';
+            portal.style.opacity = '0.8';
+            portal.style.background = 'radial-gradient(circle, rgba(255, 100, 50, 0.8) 0%, rgba(255, 150, 80, 0.5) 30%, rgba(200, 80, 40, 0.3) 50%, transparent 70%)';
         }, 400);
     });
     
