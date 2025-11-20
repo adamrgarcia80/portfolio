@@ -490,21 +490,19 @@ footer {
         left: 0;
         right: 0;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        gap: 1.5rem;
         padding: var(--spacing-unit);
         background: transparent;
         z-index: 1002;
     }
 
     .nav-logo {
-        position: relative;
-        padding: 0;
+        position: static;
     }
-
+    
     .nav-menu-toggle {
-        position: relative;
+        position: static;
         width: 40px;
         height: 40px;
         background: transparent;
@@ -520,19 +518,20 @@ footer {
         width: 24px;
         height: 24px;
         border-radius: 50%;
-        background: var(--text-color);
+    background: #ffffff;
     display: block;
     position: relative;
     z-index: 1;
         transition: transform 0.3s ease;
+    box-shadow: 0 0 12px rgba(0,0,0,0.35);
     }
     
 .menu-circle::after {
     content: "";
     position: absolute;
     inset: -0.2rem;
-    background: rgba(0, 0, 0, 0.85);
-    filter: blur(8px);
+    background: rgba(0, 0, 0, 0.75);
+    filter: blur(10px);
     border-radius: 50%;
     z-index: -1;
 }
