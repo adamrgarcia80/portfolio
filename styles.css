@@ -103,7 +103,9 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     text-decoration: none;
     letter-spacing: 0.05em;
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
     z-index: 1;
 }
 
@@ -111,8 +113,8 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     content: "";
     position: absolute;
     inset: -0.2rem -0.4rem;
-    background: rgba(0, 0, 0, 0.85);
-    filter: blur(10px);
+    background: rgba(0, 0, 0, 0.9);
+    filter: blur(12px);
     border-radius: 6px;
     z-index: -1;
 }
@@ -129,6 +131,11 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 
 .nav-menu-toggle {
     display: none;
+}
+
+.nav-menu-toggle:focus-visible {
+    outline: 1px solid rgba(255, 255, 255, 0.6);
+    outline-offset: 4px;
 }
 
 .nav-links a {
@@ -487,13 +494,10 @@ footer {
     }
     
     .nav-logo {
-        display: block;
-        position: relative;
-        top: auto;
-        left: auto;
-        z-index: auto;
-        color: var(--text-color) !important;
-        background: transparent;
+        position: fixed;
+        top: var(--spacing-unit);
+        left: var(--spacing-unit);
+        z-index: 1002;
         padding: 0;
     }
     
