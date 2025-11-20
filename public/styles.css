@@ -115,15 +115,29 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-unit);
-    background: var(--bg-color);
+    background: transparent;
     z-index: 1000;
+    transform: translateY(0);
+    transition: transform 0.3s ease-out;
+}
+
+.main-nav.scrolled {
+    transform: translateY(-100%);
+}
+
+.main-nav.scrolled .nav-logo {
+    position: fixed;
+    top: var(--spacing-unit);
+    left: var(--spacing-unit);
+    transform: translateY(0);
+    z-index: 1001;
 }
 
 .nav-logo {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     color: var(--text-color) !important;
-    text-decoration: none;
     letter-spacing: 0.05em;
 }
 
