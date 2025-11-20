@@ -3,32 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
+    <title>Adam R Garcia — Designing the Imagination</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vend+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="public/styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <p class="header-bio">Adam R Garcia is a creative leader with years of experience shaping culture at scale, most recently as Creative Director at Apple Music. His background bridges global brand leadership with an independent studio and writing practice in cultural production.<br><br>He recently completed a Master of Science in Fiction + Entertainment at SCI-Arc, with work exploring how design, storytelling, and speculative futures can reframe meaning in a world where creativity must evolve beyond traditional models. He believes in building systems, stories, and experiences that are both culturally resonant and necessary for how we imagine and create an empathetic future while reframing what the role of a creator in our current systems can be.</p>
-        </header>
-        
-        <main>
-            <div id="imageCarousel" class="image-carousel"></div>
-            <div id="contentContainer">
-                <!-- Content will be dynamically loaded here -->
+    <nav class="main-nav">
+        <a href="index.html" class="nav-logo">Adam R Garcia</a>
+        <div class="nav-links">
+            <a href="#practice">Practice</a>
+            <a href="#work">Work</a>
+            <a href="#thinking">Thinking</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Designing the imagination</h1>
+                <p class="hero-subtitle">where culture, myth-systems and commercial direction converge</p>
             </div>
-        </main>
-        
-        <footer>
-            <div id="footerLinks" class="footer-links"></div>
-            <a href="admin.html" class="admin-link">+</a>
-        </footer>
-    </div>
+        </header>
+
+        <section id="practice" class="section">
+            <h2 class="section-label">Practice</h2>
+            <div class="section-content">
+                <p>Adam R Garcia is a creative leader with years of experience shaping culture at scale, most recently as Creative Director at Apple Music. His background bridges global brand leadership with an independent studio and writing practice in cultural production.</p>
+                <p>He recently completed a Master of Science in Fiction + Entertainment at SCI-Arc, with work exploring how design, storytelling, and speculative futures can reframe meaning in a world where creativity must evolve beyond traditional models. He believes in building systems, stories, and experiences that are both culturally resonant and necessary for how we imagine and create an empathetic future while reframing what the role of a creator in our current systems can be.</p>
+            </div>
+        </section>
+
+        <section id="work" class="section">
+            <h2 class="section-label">Work</h2>
+            <div class="work-pillars">
+                <div class="pillar">
+                    <h3 class="pillar-title">Commercial & Cultural Direction</h3>
+                    <p class="pillar-description">Design work, creative direction, music & cultural projects.</p>
+                    <div class="pillar-projects" data-pillar="commercial"></div>
+                </div>
+
+                <div class="pillar">
+                    <h3 class="pillar-title">Symbolic Systems & Myth-Work</h3>
+                    <p class="pillar-description">mutant.systems, mythseed.world, Lore Core, Supplication, Public Dreams.</p>
+                    <div class="brand-nodes">
+                        <div class="brand-node"><strong>mutant.systems</strong> — workshop & lecture series on systems, purpose, decentralization.</div>
+                        <div class="brand-node"><strong>mythseed.world</strong> — an online/offline environment for evolving symbolic myth systems.</div>
+                        <div class="brand-node"><strong>Lore Core</strong> — research + generative framework around emergent cults & religions in post-apocalyptic fictions.</div>
+                    </div>
+                    <div class="pillar-projects" data-pillar="symbolic"></div>
+                </div>
+
+                <div class="pillar">
+                    <h3 class="pillar-title">Future & Emerging Forms</h3>
+                    <p class="pillar-description">Ovation and new formats: interactive film, gamebooks, emerging narrative structures.</p>
+                    <div class="pillar-projects" data-pillar="future"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="thinking" class="section">
+            <h2 class="section-label">Thinking</h2>
+            <div class="section-content">
+                <p>Essays and reflections on influences (Bridle, Gibson, Haraway, Tuan), frameworks (Mutant Systems), culture, myth, and post-capitalism.</p>
+                <div class="essays-container" id="essaysContainer"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <h2 class="section-label">Contact</h2>
+            <div class="section-content">
+                <p>For commercial clients, collaborations, workshops, and lectures.</p>
+                <div class="contact-info">
+                    <a href="mailto:contact@adamrgarcia.com" class="contact-link">Email</a>
+                </div>
+            </div>
+        </section>
+    </main>
     
-    <script src="storage.js"></script>
-    <script src="app-indexeddb.js"></script>
+    <footer>
+        <a href="admin.html" class="admin-link">+</a>
+    </footer>
+    
+    <script src="public/github-config.js"></script>
+    <script src="public/app-github.js"></script>
 </body>
 </html>
