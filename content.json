@@ -1,0 +1,22 @@
+{
+  "projects": [
+    {
+      "id": "1763615220269",
+      "name": "Altar of Tomorrow",
+      "order": 0,
+      "createdAt": "2025-11-20T05:07:00.269Z"
+    }
+  ],
+  "images": [
+    {
+      "id": "1763615222205",
+      "name": "altaroftomorrow_r3.png",
+      "url": "https://raw.githubusercontent.com/adamrgarcia80/portfolio/main/images/1763615220269-altaroftomorrow_r3.png",
+      "layout": "single",
+      "order": 0,
+      "projectId": "1763615220269",
+      "uploadedAt": "2025-11-20T05:07:02.205Z"
+    }
+  ],
+  "sections": []
+}
