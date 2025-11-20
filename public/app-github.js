@@ -243,40 +243,63 @@ function initPortal() {
         return;
     }
     
-    let mouseX = 0;
-    let mouseY = 0;
+    // Detect mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
     
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    
+    // Smooth mouse following with easing
+    function updatePortalPosition() {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        // Calculate target offset from mouse position
+        targetX = (mouseX - centerX) * 0.2;
+        targetY = (mouseY - centerY) * 0.2;
+        
+        // Smooth interpolation
+        currentX += (targetX - currentX) * 0.1;
+        currentY += (targetY - currentY) * 0.1;
+        
+        portal.style.left = `calc(50% + ${currentX}px)`;
+        portal.style.top = `calc(50% + ${currentY}px)`;
+        
+        requestAnimationFrame(updatePortalPosition);
+    }
+    
+    // Start continuous position update
+    updatePortalPosition();
+    
+    // Track mouse movement
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const offsetX = (mouseX - centerX) * 0.15;
-        const offsetY = (mouseY - centerY) * 0.15;
-        
-        portal.style.left = `calc(50% + ${offsetX}px)`;
-        portal.style.top = `calc(50% + ${offsetY}px)`;
     });
     
-    document.addEventListener('click', (e) => {
-        // Pulse effect on click - brighter red/orange
-        portal.style.width = '1000px';
-        portal.style.height = '1000px';
-        portal.style.margin = '-500px 0 0 -500px';
-        portal.style.opacity = '1';
-        portal.style.background = 'radial-gradient(circle, rgba(255, 120, 60, 1) 0%, rgba(255, 160, 90, 0.7) 30%, rgba(220, 100, 50, 0.4) 50%, transparent 70%)';
-        
-        setTimeout(() => {
-            portal.style.width = '800px';
-            portal.style.height = '800px';
-            portal.style.margin = '-400px 0 0 -400px';
-            portal.style.opacity = '0.8';
-            portal.style.background = 'radial-gradient(circle, rgba(255, 100, 50, 0.8) 0%, rgba(255, 150, 80, 0.5) 30%, rgba(200, 80, 40, 0.3) 50%, transparent 70%)';
-        }, 400);
-    });
+    // Click pulse only on desktop
+    if (!isMobile) {
+        document.addEventListener('click', (e) => {
+            // Gentle but snappy pulse
+            portal.style.width = '900px';
+            portal.style.height = '900px';
+            portal.style.margin = '-450px 0 0 -450px';
+            portal.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                portal.style.width = '800px';
+                portal.style.height = '800px';
+                portal.style.margin = '-400px 0 0 -400px';
+                portal.style.opacity = '0.5';
+            }, 300);
+        });
+    }
     
-    console.log('Portal initialized');
+    console.log('Portal initialized', isMobile ? '(mobile mode)' : '(desktop mode)');
 }
 
 // Mobile menu toggle
