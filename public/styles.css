@@ -188,7 +188,7 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 /* Main content */
 main {
     margin-top: 80px;
-    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit);
+    padding: calc(var(--spacing-unit) * 2) 0 var(--spacing-unit) 0;
     max-width: none;
     margin-left: var(--spacing-unit);
     margin-right: var(--spacing-unit);
