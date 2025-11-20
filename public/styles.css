@@ -151,6 +151,21 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     font-weight: 300;
     letter-spacing: 0.05em;
     transition: opacity 0.2s;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    z-index: 1;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    inset: -0.2rem -0.4rem;
+    background: rgba(0, 0, 0, 0.85);
+    filter: blur(12px);
+    border-radius: 6px;
+    z-index: -1;
 }
 
 .nav-links a:hover {
