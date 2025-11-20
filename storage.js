@@ -1,5 +1,4 @@
 // Storage manager with JSONBin.io (for cross-device sync) and IndexedDB fallback
-// Images are stored in Cloudinary URLs, metadata syncs via JSONBin.io
 
 const DB_NAME = 'portfolioDB';
 const DB_VERSION = 3;
@@ -112,7 +111,7 @@ async function getSiteSettingsFromIndexedDB() {
         const transaction = database.transaction([STORE_SITE_SETTINGS], 'readonly');
         const store = transaction.objectStore(STORE_SITE_SETTINGS);
         const request = store.get('main');
-        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [], cloudinaryConfig: {}, jsonbinApiKey: null, jsonbinBinId: null });
+        request.onsuccess = () => resolve(request.result || { id: 'main', bioText: '', footerLinks: [], jsonbinApiKey: null, jsonbinBinId: null });
         request.onerror = () => reject(request.error);
     });
 }
@@ -518,19 +517,6 @@ async function saveSiteSettings(settings) {
         };
         request.onerror = () => reject(request.error);
     });
-}
-
-// Get Cloudinary configuration
-async function getCloudinaryConfig() {
-    const settings = await getSiteSettings();
-    return settings.cloudinaryConfig || { cloudName: '', uploadPreset: '' };
-}
-
-// Save Cloudinary configuration
-async function saveCloudinaryConfig(config) {
-    const settings = await getSiteSettings();
-    settings.cloudinaryConfig = config;
-    await saveSiteSettings(settings);
 }
 
 // Initialize with default content if empty

@@ -424,150 +424,7 @@ async function uploadFile(type) {
         return;
     }
     
-    statusDiv.innerHTML = '<span>Uploading to cloud...</span>';
-    
-    try {
-        // Get Cloudinary config
-        const cloudinaryConfig = await getCloudinaryConfig();
-        
-        if (!cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
-            statusDiv.innerHTML = '<span class="error">Please configure Cloudinary settings first. Go to "Cloud Storage (Cloudinary)" section below.</span>';
-            return;
-        }
-        
-        // Validate and trim inputs
-        const cloudName = cloudinaryConfig.cloudName.trim();
-        const uploadPreset = cloudinaryConfig.uploadPreset.trim();
-        
-        if (!cloudName || !uploadPreset) {
-            statusDiv.innerHTML = '<span class="error">Cloud Name and Upload Preset cannot be empty. Please check your settings.</span>';
-            return;
-        }
-        
-        // Upload to Cloudinary
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', uploadPreset);
-        
-        const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-        
-        console.log('Uploading to Cloudinary:', {
-            cloudName: cloudName,
-            uploadPreset: uploadPreset,
-            url: uploadUrl,
-            fileName: file.name,
-            fileSize: file.size
-        });
-        
-        statusDiv.innerHTML = '<span>Uploading to Cloudinary...</span>';
-        
-        const response = await fetch(uploadUrl, {
-            method: 'POST',
-            body: formData
-        });
-        
-        console.log('Cloudinary response status:', response.status, response.statusText);
-        
-        if (!response.ok) {
-            let errorMessage = `Cloudinary upload failed: ${response.status} ${response.statusText}`;
-            let errorDetails = '';
-            
-            try {
-                // Try to get error as JSON first
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    const errorData = await response.json();
-                    console.error('Cloudinary upload error (JSON):', errorData);
-                    
-                    if (errorData.error) {
-                        if (errorData.error.message) {
-                            errorDetails = errorData.error.message;
-                        } else {
-                            errorDetails = JSON.stringify(errorData.error);
-                        }
-                    }
-                } else {
-                    // Try as text
-                    const errorText = await response.text();
-                    console.error('Cloudinary upload error (text):', errorText);
-                    errorDetails = errorText;
-                }
-                
-                // Provide specific guidance based on error
-                if (errorDetails.includes('Invalid upload preset') || errorDetails.includes('upload preset')) {
-                    errorMessage = 'Invalid upload preset. Check that: 1) The preset name is spelled correctly (case-sensitive), 2) The preset exists in your Cloudinary account, 3) The preset is set to "Unsigned" mode.';
-                } else if (errorDetails.includes('Invalid cloud name') || errorDetails.includes('cloud name')) {
-                    errorMessage = 'Invalid cloud name. Check your Cloud Name in the Cloudinary dashboard (top of the page).';
-                } else if (errorDetails.includes('unsigned') || errorDetails.includes('signature')) {
-                    errorMessage = 'Upload preset must be set to "Unsigned" mode. Go to Settings → Upload → Upload presets and set "Signing mode" to "Unsigned".';
-                } else if (errorDetails) {
-                    errorMessage = `Upload failed: ${errorDetails}`;
-                }
-            } catch (e) {
-                console.error('Error parsing error response:', e);
-                errorMessage += '. Check browser console (F12) for details.';
-            }
-            
-            throw new Error(errorMessage);
-        }
-        
-        const cloudinaryData = await response.json();
-        console.log('Cloudinary upload success:', cloudinaryData);
-        
-        if (!cloudinaryData.secure_url) {
-            throw new Error('Cloudinary did not return a secure URL');
-        }
-        
-        const layout = document.getElementById('imageLayout').value;
-        
-        // Get current max order and add 1
-        const existingImages = await getImagesForProject(currentProjectId);
-        const maxOrder = existingImages.length > 0 ? Math.max(...existingImages.map(i => i.order || 0)) : -1;
-        const order = maxOrder + 1;
-        
-        // Store Cloudinary URL instead of base64
-        const fileData = {
-            id: Date.now().toString(),
-            name: file.name,
-            url: cloudinaryData.secure_url, // Use Cloudinary URL
-            publicId: cloudinaryData.public_id, // Store for deletion
-            size: file.size,
-            type: 'image',
-            layout: layout,
-            order: order,
-            projectId: currentProjectId,
-            uploadedAt: new Date().toISOString()
-        };
-        
-        await saveImage(fileData);
-        
-        statusDiv.innerHTML = '<span class="success">Uploaded to cloud!</span>';
-        fileInput.value = '';
-        hideAddImage();
-        await loadProjectContent();
-        
-        if (window.updatePortfolioContent) {
-            window.updatePortfolioContent();
-        }
-        if (window.updateImageCarousel) {
-            window.updateImageCarousel();
-        }
-        
-        setTimeout(() => {
-            statusDiv.innerHTML = '';
-        }, 2000);
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        let errorMessage = 'Upload failed. ';
-        if (error.message.includes('Cloudinary')) {
-            errorMessage += error.message;
-        } else if (error.message.includes('configure')) {
-            errorMessage += 'Please configure Cloudinary settings in the "Cloud Storage (Cloudinary)" section.';
-        } else {
-            errorMessage += 'Check Cloudinary settings and ensure your upload preset is set to "Unsigned" in Cloudinary dashboard.';
-        }
-        statusDiv.innerHTML = `<span class="error">${errorMessage}</span>`;
-    }
+    statusDiv.innerHTML = '<span class="error">Image upload not configured. Please use the GitHub version (admin-github.js) for image uploads.</span>';
 }
 
 async function deleteFile(id, type) {
@@ -617,13 +474,6 @@ async function loadSiteSettings() {
             jsonbinApiKeyInput.value = settings.jsonbinApiKey;
         }
         
-        // Load Cloudinary config
-        const cloudinaryConfig = settings.cloudinaryConfig || { cloudName: '', uploadPreset: '' };
-        const cloudNameInput = document.getElementById('cloudinaryCloudName');
-        const uploadPresetInput = document.getElementById('cloudinaryUploadPreset');
-        if (cloudNameInput) cloudNameInput.value = cloudinaryConfig.cloudName || '';
-        if (uploadPresetInput) uploadPresetInput.value = cloudinaryConfig.uploadPreset || '';
-        
         // Load footer links
         await loadFooterLinks();
     } catch (error) {
@@ -660,28 +510,6 @@ async function saveJsonbinConfigHandler() {
     } catch (error) {
         console.error('Error saving JSONBin config:', error);
         document.getElementById('jsonbinStatus').innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-    }
-}
-
-async function saveCloudinaryConfigHandler() {
-    try {
-        const cloudName = document.getElementById('cloudinaryCloudName').value.trim();
-        const uploadPreset = document.getElementById('cloudinaryUploadPreset').value.trim();
-        
-        if (!cloudName || !uploadPreset) {
-            document.getElementById('cloudinaryStatus').innerHTML = '<span class="error">Please enter both Cloud Name and Upload Preset</span>';
-            return;
-        }
-        
-        await saveCloudinaryConfig({ cloudName, uploadPreset });
-        document.getElementById('cloudinaryStatus').innerHTML = '<span class="success">Cloudinary settings saved!</span>';
-        
-        setTimeout(() => {
-            document.getElementById('cloudinaryStatus').innerHTML = '';
-        }, 3000);
-    } catch (error) {
-        console.error('Error saving Cloudinary config:', error);
-        document.getElementById('cloudinaryStatus').innerHTML = '<span class="error">Error saving settings</span>';
     }
 }
 
