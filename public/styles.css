@@ -390,7 +390,7 @@ main {
 
 .symbolic-project-title a {
     color: var(--text-color) !important;
-    text-decoration: none;
+    text-decoration: underline;
     transition: opacity 0.2s;
 }
 
