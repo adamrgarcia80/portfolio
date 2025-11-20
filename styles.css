@@ -40,10 +40,14 @@ body {
     margin: -400px 0 0 -400px;
     background: radial-gradient(circle, 
         rgba(255, 100, 50, 0.5) 0%, 
-        rgba(255, 140, 70, 0.4) 15%,
-        rgba(255, 150, 80, 0.3) 25%,
+        rgba(100, 80, 150, 0.4) 10%,
+        rgba(255, 140, 70, 0.35) 18%,
+        rgba(60, 100, 180, 0.3) 25%,
+        rgba(255, 150, 80, 0.3) 30%,
         rgba(240, 120, 60, 0.25) 35%,
+        rgba(80, 120, 200, 0.2) 40%,
         rgba(200, 80, 40, 0.2) 45%,
+        rgba(50, 80, 150, 0.15) 50%,
         rgba(180, 60, 30, 0.15) 55%,
         transparent 70%);
     border-radius: 50%;
@@ -51,8 +55,8 @@ body {
     opacity: 0.5;
     pointer-events: none;
     z-index: 0;
-    animation: breathe 4s ease-in-out infinite;
-    will-change: transform, opacity, width, height, left, top;
+    animation: breathe 4s ease-in-out infinite, colorShift 12s ease-in-out infinite;
+    will-change: transform, opacity, width, height, left, top, filter;
 }
 
 @keyframes breathe {
@@ -63,6 +67,18 @@ body {
     50% {
         transform: scale(1.15);
         opacity: 0.6;
+    }
+}
+
+@keyframes colorShift {
+    0%, 100% {
+        filter: blur(100px) hue-rotate(0deg);
+    }
+    33% {
+        filter: blur(100px) hue-rotate(15deg);
+    }
+    66% {
+        filter: blur(100px) hue-rotate(-10deg);
     }
 }
 
