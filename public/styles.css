@@ -107,6 +107,7 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     align-items: center;
     line-height: 1;
     z-index: 1;
+    isolation: isolate;
 }
 
 .nav-logo::after {
@@ -518,10 +519,17 @@ footer {
         padding: var(--spacing-unit);
         background: transparent;
         z-index: 1002;
+        overflow: visible;
     }
 
     .nav-logo {
         position: static;
+        overflow: visible;
+    }
+    
+    .nav-logo::after {
+        inset: -0.15rem -0.3rem;
+        filter: blur(30px);
     }
     
     .nav-menu-toggle {
