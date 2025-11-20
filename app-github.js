@@ -259,7 +259,16 @@ function initMobileMenu() {
 
         toggle.addEventListener('click', (event) => {
             event.preventDefault();
+            event.stopPropagation();
             toggleDrawer();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!links.contains(event.target) && !toggle.contains(event.target)) {
+                links.classList.remove('active');
+                toggle.classList.remove('active');
+                document.body.classList.remove('drawer-open');
+            }
         });
         
         // Close menu when clicking a link
