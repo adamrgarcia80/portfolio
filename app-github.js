@@ -5,6 +5,9 @@ const GITHUB_CONFIG_KEY = 'githubConfig';
 // Symbolic Systems Body Copy
 const SYMBOLIC_SYSTEMS_BODY = 'Works exploring how design, storytelling, and speculative futures can reframe meaning in a world where creativity must evolve beyond traditional models. These projects investigate emergent symbolic systems, myth-making in digital spaces, and the role of narrative in shaping collective understanding.';
 
+// Commercial Projects Body Copy
+const COMMERCIAL_PROJECTS_BODY = 'Design work, creative direction, music and cultural projects for clients and collaborators. Selected commercial and cultural projects spanning brand identity, digital experiences, and creative strategy.';
+
 // Symbolic Systems Projects with sample copy and images
 const SYMBOLIC_PROJECTS = [
     {
@@ -64,10 +67,22 @@ function getGitHubConfig() {
 }
 
 async function loadContent() {
+    // Always load projects, regardless of GitHub config
+    loadSymbolicProjects();
+    loadCommercialProjectsBody();
+    initCommercialCarousel();
+    
     try {
         const config = getGitHubConfig();
         if (!config) {
             console.error('GitHub not configured');
+            // Animate text even without GitHub
+            if (!window.textAnimated) {
+                setTimeout(() => {
+                    animateAllText();
+                    window.textAnimated = true;
+                }, 100);
+            }
             return;
         }
         
@@ -79,18 +94,19 @@ async function loadContent() {
         
         if (!response.ok) {
             if (response.status === 404) {
+                // Animate text even if no content.json
+                if (!window.textAnimated) {
+                    setTimeout(() => {
+                        animateAllText();
+                        window.textAnimated = true;
+                    }, 100);
+                }
                 return; // No content yet
             }
             throw new Error('Failed to load content');
         }
         
         const data = await response.json();
-        
-        // Load symbolic projects
-        loadSymbolicProjects();
-        
-        // Initialize commercial carousel
-        initCommercialCarousel();
         
         // Animate all text after content loads (only on initial load)
         if (!window.textAnimated) {
@@ -102,9 +118,13 @@ async function loadContent() {
         
     } catch (error) {
         console.error('Error loading content:', error);
-        // Still load projects even if GitHub fails
-        loadSymbolicProjects();
-        initCommercialCarousel();
+        // Animate text even if GitHub fails
+        if (!window.textAnimated) {
+            setTimeout(() => {
+                animateAllText();
+                window.textAnimated = true;
+            }, 100);
+        }
     }
 }
 
@@ -113,6 +133,7 @@ function loadSymbolicProjects() {
     // Load body copy
     const bodyContainer = document.getElementById('symbolicSystemsBody');
     if (bodyContainer) {
+        bodyContainer.innerHTML = '';
         const bodyParagraph = document.createElement('p');
         bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
         bodyContainer.appendChild(bodyParagraph);
@@ -120,7 +141,10 @@ function loadSymbolicProjects() {
     
     // Load projects
     const container = document.getElementById('symbolicProjects');
-    if (!container) return;
+    if (!container) {
+        console.warn('Symbolic projects container not found');
+        return;
+    }
     
     container.innerHTML = '';
     
@@ -164,11 +188,20 @@ function loadSymbolicProjects() {
     });
 }
 
+// Load Commercial Projects Body Copy
+function loadCommercialProjectsBody() {
+    const bodyContainer = document.getElementById('commercialProjectsBody');
+    if (bodyContainer) {
+        bodyContainer.innerHTML = '';
+        const bodyParagraph = document.createElement('p');
+        bodyParagraph.textContent = COMMERCIAL_PROJECTS_BODY;
+        bodyContainer.appendChild(bodyParagraph);
+    }
+}
+
 // Initialize Commercial Carousel
 function initCommercialCarousel() {
     const carouselContainer = document.querySelector('.carousel-image-placeholder');
-    const prevBtn = document.getElementById('carouselPrev');
-    const nextBtn = document.getElementById('carouselNext');
     
     if (!carouselContainer) return;
     
@@ -211,25 +244,6 @@ function initCommercialCarousel() {
     function nextImage() {
         currentCommercialImageIndex = (currentCommercialImageIndex + 1) % COMMERCIAL_IMAGES.length;
         showImage(currentCommercialImageIndex);
-    }
-    
-    function prevImage() {
-        currentCommercialImageIndex = (currentCommercialImageIndex - 1 + COMMERCIAL_IMAGES.length) % COMMERCIAL_IMAGES.length;
-        showImage(currentCommercialImageIndex);
-    }
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            prevImage();
-        });
-    }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            nextImage();
-        });
     }
     
     // Auto-advance carousel every 5 seconds
