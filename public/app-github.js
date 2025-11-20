@@ -67,6 +67,7 @@ function getGitHubConfig() {
 }
 
 async function loadContent() {
+    console.log('loadContent called');
     // Always load projects, regardless of GitHub config
     loadSymbolicProjects();
     loadCommercialProjectsBody();
@@ -130,25 +131,54 @@ async function loadContent() {
 
 // Load Symbolic Systems Projects
 function loadSymbolicProjects() {
+    console.log('loadSymbolicProjects called');
+    console.log('SYMBOLIC_PROJECTS length:', SYMBOLIC_PROJECTS ? SYMBOLIC_PROJECTS.length : 'undefined');
+    
+    // Wait a moment to ensure DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadSymbolicProjects, 100);
+        });
+        return;
+    }
+    
     // Load body copy
     const bodyContainer = document.getElementById('symbolicSystemsBody');
     if (bodyContainer) {
-        bodyContainer.innerHTML = '';
-        const bodyParagraph = document.createElement('p');
-        bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
-        bodyContainer.appendChild(bodyParagraph);
+        if (!bodyContainer.querySelector('p')) {
+            const bodyParagraph = document.createElement('p');
+            bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
+            bodyContainer.appendChild(bodyParagraph);
+            console.log('Body copy loaded');
+        }
+    } else {
+        console.error('symbolicSystemsBody container not found!');
     }
     
     // Load projects
     const container = document.getElementById('symbolicProjects');
     if (!container) {
-        console.warn('Symbolic projects container not found');
+        console.error('Symbolic projects container not found!');
+        // Try again after a short delay
+        setTimeout(loadSymbolicProjects, 500);
         return;
     }
     
-    container.innerHTML = '';
+    // Only load if container is empty
+    if (container.children.length > 0) {
+        console.log('Projects already loaded, skipping');
+        return;
+    }
     
-    SYMBOLIC_PROJECTS.forEach(project => {
+    console.log('Container found, loading', SYMBOLIC_PROJECTS.length, 'projects');
+    
+    if (!SYMBOLIC_PROJECTS || SYMBOLIC_PROJECTS.length === 0) {
+        console.error('SYMBOLIC_PROJECTS is empty or undefined!');
+        return;
+    }
+    
+    SYMBOLIC_PROJECTS.forEach((project, index) => {
+        console.log('Loading project', index + 1, ':', project.title);
         const projectDiv = document.createElement('div');
         projectDiv.className = 'symbolic-project';
         
@@ -186,6 +216,8 @@ function loadSymbolicProjects() {
         
         container.appendChild(projectDiv);
     });
+    
+    console.log('All projects loaded. Container now has', container.children.length, 'children');
 }
 
 // Load Commercial Projects Body Copy
@@ -561,6 +593,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+    });
+    
+    // Load projects immediately - don't wait for GitHub
+    // Use requestAnimationFrame to ensure DOM is fully ready
+    requestAnimationFrame(() => {
+        loadSymbolicProjects();
+        loadCommercialProjectsBody();
+        initCommercialCarousel();
     });
     
     // Load content and animate text
