@@ -462,24 +462,32 @@ function initMobileMenu() {
     const links = document.getElementById('navLinks');
     
     if (!toggle || !links) {
-        console.warn('Mobile menu elements not found');
+        console.error('Mobile menu elements not found!', { toggle, links });
         return;
     }
+    
+    console.log('Initializing mobile menu', { toggle, links });
     
     // Toggle menu on button click
     toggle.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const isActive = links.classList.contains('active');
+        console.log('Toggle clicked');
+        const wasActive = links.classList.contains('active');
         links.classList.toggle('active');
         toggle.classList.toggle('active');
-        console.log('Menu toggled, active:', !isActive);
+        console.log('Menu toggled. Now active:', !wasActive);
+        console.log('Links classes:', links.className);
     });
     
-    // Close menu when clicking outside (with slight delay to avoid immediate close)
+    // Close menu when clicking outside
     document.addEventListener('click', (event) => {
-        if (links.classList.contains('active')) {
-            if (!links.contains(event.target) && !toggle.contains(event.target)) {
+        const isMenuActive = links.classList.contains('active');
+        if (isMenuActive) {
+            const clickedInsideMenu = links.contains(event.target);
+            const clickedToggle = toggle.contains(event.target);
+            if (!clickedInsideMenu && !clickedToggle) {
+                console.log('Closing menu - clicked outside');
                 links.classList.remove('active');
                 toggle.classList.remove('active');
             }
@@ -489,6 +497,7 @@ function initMobileMenu() {
     // Close menu when clicking a link
     links.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
+            console.log('Closing menu - link clicked');
             links.classList.remove('active');
             toggle.classList.remove('active');
         });
