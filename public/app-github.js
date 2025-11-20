@@ -148,6 +148,17 @@ function loadSymbolicProjects() {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'symbolic-project';
             
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'symbolic-project-title';
+            const titleLink = document.createElement('a');
+            titleLink.href = `project.html?id=${project.id}`;
+            titleLink.textContent = project.title;
+            titleDiv.appendChild(titleLink);
+            
+            const captionDiv = document.createElement('div');
+            captionDiv.className = 'symbolic-project-caption';
+            captionDiv.textContent = project.caption;
+            
             const imageDiv = document.createElement('div');
             imageDiv.className = 'symbolic-project-image';
             if (project.image) {
@@ -160,20 +171,9 @@ function loadSymbolicProjects() {
                 imageDiv.appendChild(img);
             }
             
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'symbolic-project-title';
-            const titleLink = document.createElement('a');
-            titleLink.href = `project.html?id=${project.id}`;
-            titleLink.textContent = project.title;
-            titleDiv.appendChild(titleLink);
-            
-            const captionDiv = document.createElement('div');
-            captionDiv.className = 'symbolic-project-caption';
-            captionDiv.textContent = project.caption;
-            
-            projectDiv.appendChild(imageDiv);
             projectDiv.appendChild(titleDiv);
             projectDiv.appendChild(captionDiv);
+            projectDiv.appendChild(imageDiv);
             
             container.appendChild(projectDiv);
         });
