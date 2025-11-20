@@ -5,7 +5,7 @@
 }
 
 :root {
-    --font-family: 'Vera Sans', sans-serif;
+    --font-family: 'Inconsolata', monospace;
     --bg-color: #000000;
     --text-color: #ffffff;
     --spacing-unit: 1.5rem;
