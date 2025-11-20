@@ -251,16 +251,23 @@ function initMobileMenu() {
     const links = document.getElementById('navLinks');
     
     if (toggle && links) {
-        toggle.addEventListener('click', () => {
-            toggle.classList.toggle('active');
-            links.classList.toggle('active');
+        const toggleDrawer = () => {
+            const isActive = links.classList.toggle('active');
+            toggle.classList.toggle('active', isActive);
+            document.body.classList.toggle('drawer-open', isActive);
+        };
+
+        toggle.addEventListener('click', (event) => {
+            event.preventDefault();
+            toggleDrawer();
         });
         
         // Close menu when clicking a link
         links.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                toggle.classList.remove('active');
                 links.classList.remove('active');
+                toggle.classList.remove('active');
+                document.body.classList.remove('drawer-open');
             });
         });
     }
