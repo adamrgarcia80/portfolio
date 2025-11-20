@@ -618,3 +618,23 @@ document.addEventListener('visibilitychange', () => {
         loadContent();
     }
 });
+
+// Fallback: also try loading when window fully loads
+window.addEventListener('load', () => {
+    console.log('Window loaded, checking if projects are visible');
+    const container = document.getElementById('symbolicProjects');
+    if (container && container.children.length === 0) {
+        console.log('Projects not loaded, loading now...');
+        loadSymbolicProjects();
+    }
+});
+
+// Immediate check if DOM is already ready
+if (document.readyState !== 'loading') {
+    console.log('DOM already ready, loading projects immediately');
+    setTimeout(() => {
+        loadSymbolicProjects();
+        loadCommercialProjectsBody();
+        initCommercialCarousel();
+    }, 100);
+}
