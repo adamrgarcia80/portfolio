@@ -222,15 +222,6 @@ main {
 }
 
 .section-content p,
-    .pillar-description,
-    .brand-node,
-    .pillar-project-meta,
-    .essay-excerpt,
-    .contact-content {
-        margin-bottom: var(--spacing-unit);
-        line-height: 1.6;
-        max-width: 100%;
-    }
 .pillar-description,
 .brand-node,
 .pillar-project-meta,
@@ -238,6 +229,13 @@ main {
 .contact-content {
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
+    max-width: 110ch;
+}
+.pillar-description,
+.brand-node,
+.pillar-project-meta,
+.essay-excerpt,
+.contact-content {
     max-width: 110ch;
 }
 
@@ -593,7 +591,12 @@ footer {
         padding-top: calc(var(--spacing-unit) * 2);
     }
 
-    .section-content p {
+    .section-content p,
+    .pillar-description,
+    .brand-node,
+    .pillar-project-meta,
+    .essay-excerpt,
+    .contact-content {
         max-width: 100%;
     }
     
