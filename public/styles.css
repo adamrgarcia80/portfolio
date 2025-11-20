@@ -224,6 +224,7 @@ main {
 .section-content p {
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
+    max-width: 60ch;
 }
 
 .section-content p:last-child {
@@ -576,6 +577,10 @@ footer {
     main {
         margin-top: 0;
         padding-top: calc(var(--spacing-unit) * 2);
+    }
+
+    .section-content p {
+        max-width: 100%;
     }
     
     .two-column-grid {
