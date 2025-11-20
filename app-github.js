@@ -243,43 +243,36 @@ function animateAllText() {
     });
 }
 
-// Portal removed - no initialization needed
-
-// Mobile menu toggle
+// Mobile menu toggle - fresh implementation
 function initMobileMenu() {
     const toggle = document.getElementById('navToggle');
     const links = document.getElementById('navLinks');
     
-    if (toggle && links) {
-        const toggleDrawer = () => {
-            const isActive = links.classList.toggle('active');
-            toggle.classList.toggle('active', isActive);
-            document.body.classList.toggle('drawer-open', isActive);
-        };
-
-        toggle.addEventListener('click', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            toggleDrawer();
+    if (!toggle || !links) return;
+    
+    // Toggle menu on button click
+    toggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        links.classList.toggle('active');
+        toggle.classList.toggle('active');
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!links.contains(event.target) && !toggle.contains(event.target)) {
+            links.classList.remove('active');
+            toggle.classList.remove('active');
+        }
+    });
+    
+    // Close menu when clicking a link
+    links.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            links.classList.remove('active');
+            toggle.classList.remove('active');
         });
-
-        document.addEventListener('click', (event) => {
-            if (!links.contains(event.target) && !toggle.contains(event.target)) {
-                links.classList.remove('active');
-                toggle.classList.remove('active');
-                document.body.classList.remove('drawer-open');
-            }
-        });
-        
-        // Close menu when clicking a link
-        links.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                links.classList.remove('active');
-                toggle.classList.remove('active');
-                document.body.classList.remove('drawer-open');
-            });
-        });
-    }
+    });
 }
 
 // Navigation scroll behavior (desktop only)
