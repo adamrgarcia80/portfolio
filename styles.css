@@ -44,7 +44,7 @@ body {
     opacity: 0.5;
     pointer-events: none;
     z-index: 0;
-    animation: breathe 4s ease-in-out infinite, drift 20s ease-in-out infinite;
+    animation: breathe 4s ease-in-out infinite;
     will-change: transform, opacity, width, height, left, top;
 }
 
@@ -56,21 +56,6 @@ body {
     50% {
         transform: scale(1.15);
         opacity: 0.6;
-    }
-}
-
-@keyframes drift {
-    0%, 100% {
-        transform: translate(-50%, -50%) translate(0, 0);
-    }
-    25% {
-        transform: translate(-50%, -50%) translate(30px, -20px);
-    }
-    50% {
-        transform: translate(-50%, -50%) translate(-20px, 30px);
-    }
-    75% {
-        transform: translate(-50%, -50%) translate(20px, 20px);
     }
 }
 
