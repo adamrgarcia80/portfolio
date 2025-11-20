@@ -51,14 +51,6 @@ h1, h2, h3, h4, h5, h6, .section-label, .pillar-title, .pillar-project-title, .e
     margin-bottom: 0.25rem;
 }
 
-.section-label::before,
-.pillar-title::before,
-.pillar-project-title::before,
-.essay-title::before,
-.hero-title::before {
-    content: "—";
-}
-
 /* Regular text */
 p, div, span, .practice-text, .pillar-description, .brand-node, .pillar-project-meta, .essay-excerpt, .contact-content, .hero-subtitle, .placeholder-text {
     font-weight: 300;
@@ -110,6 +102,19 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     color: var(--text-color) !important;
     text-decoration: none;
     letter-spacing: 0.05em;
+    position: relative;
+    display: inline-block;
+    z-index: 1;
+}
+
+.nav-logo::after {
+    content: "";
+    position: absolute;
+    inset: -0.2rem -0.4rem;
+    background: rgba(0, 0, 0, 0.6);
+    filter: blur(6px);
+    border-radius: 6px;
+    z-index: -1;
 }
 
 .nav-logo:hover {
@@ -182,7 +187,7 @@ main {
 
 .section-label {
     font-size: 1rem !important;
-    font-weight: 300;
+    font-weight: 600;
     margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
 }
@@ -371,20 +376,12 @@ footer {
     text-align: left;
 }
 
-.content-section .text-header::before {
-    content: "—";
-}
-
 .content-section .text-body-bold {
     font-size: 1rem !important;
     font-weight: 300;
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
     text-align: left;
-}
-
-.content-section .text-body-bold::before {
-    content: "—";
 }
 
 .content-section .text-body-regular {
@@ -617,10 +614,6 @@ footer {
     margin-bottom: var(--spacing-unit);
 }
 
-.admin-header h1::before {
-    content: "—";
-}
-
 .auth-form {
     margin-bottom: calc(var(--spacing-unit) * 2);
 }
@@ -661,10 +654,6 @@ footer {
     font-weight: 300;
     margin-bottom: var(--spacing-unit);
     letter-spacing: 0.03em;
-}
-
-.admin-section h2::before {
-    content: "—";
 }
 
 .form-group {
@@ -769,10 +758,6 @@ button:hover {
     font-weight: 300;
     margin-bottom: 0.5rem;
     letter-spacing: 0.03em;
-}
-
-.section-item h3::before {
-    content: "—";
 }
 
 .section-item p {
