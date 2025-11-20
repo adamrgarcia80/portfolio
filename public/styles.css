@@ -39,20 +39,23 @@ body {
     height: 800px;
     margin: -400px 0 0 -400px;
     background: radial-gradient(circle, 
-        rgba(255, 100, 50, 0.5) 0%, 
-        rgba(100, 80, 150, 0.4) 10%,
-        rgba(255, 140, 70, 0.35) 18%,
-        rgba(60, 100, 180, 0.3) 25%,
-        rgba(255, 150, 80, 0.3) 30%,
-        rgba(240, 120, 60, 0.25) 35%,
-        rgba(80, 120, 200, 0.2) 40%,
-        rgba(200, 80, 40, 0.2) 45%,
-        rgba(50, 80, 150, 0.15) 50%,
-        rgba(180, 60, 30, 0.15) 55%,
+        rgba(255, 120, 60, 0.7) 0%, 
+        rgba(200, 50, 100, 0.6) 5%,
+        rgba(150, 80, 200, 0.55) 10%,
+        rgba(255, 140, 70, 0.5) 15%,
+        rgba(60, 100, 180, 0.45) 20%,
+        rgba(180, 60, 150, 0.4) 25%,
+        rgba(255, 150, 80, 0.4) 30%,
+        rgba(240, 120, 60, 0.35) 35%,
+        rgba(80, 120, 200, 0.3) 40%,
+        rgba(200, 80, 40, 0.3) 45%,
+        rgba(120, 80, 180, 0.25) 50%,
+        rgba(50, 80, 150, 0.2) 55%,
+        rgba(180, 60, 30, 0.2) 60%,
         transparent 70%);
     border-radius: 50%;
     filter: blur(100px);
-    opacity: 0.5;
+    opacity: 0.65;
     pointer-events: none;
     z-index: 0;
     animation: breathe 4s ease-in-out infinite, colorShift 12s ease-in-out infinite;
@@ -62,11 +65,11 @@ body {
 @keyframes breathe {
     0%, 100% {
         transform: scale(1);
-        opacity: 0.4;
+        opacity: 0.6;
     }
     50% {
         transform: scale(1.15);
-        opacity: 0.6;
+        opacity: 0.8;
     }
 }
 
@@ -198,7 +201,7 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 /* Main content */
 main {
     margin-top: 80px;
-    padding: calc(var(--spacing-unit) * 3) var(--spacing-unit);
+    padding: calc(var(--spacing-unit) * 2) var(--spacing-unit);
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
@@ -538,6 +541,7 @@ footer {
         align-items: center;
         padding: var(--spacing-unit);
         z-index: 1002;
+        background: transparent;
     }
     
     .nav-logo {
@@ -584,8 +588,8 @@ footer {
     .nav-links {
         position: fixed;
         top: 0;
-        right: -100%;
-        width: 280px;
+        right: -50%;
+        width: 50%;
         height: 100vh;
         background: rgba(0, 0, 0, 0.95);
         padding: calc(var(--spacing-unit) * 3) var(--spacing-unit) var(--spacing-unit);

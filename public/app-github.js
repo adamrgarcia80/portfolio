@@ -336,10 +336,16 @@ function initMobileMenu() {
     }
 }
 
-// Navigation scroll behavior
+// Navigation scroll behavior (desktop only)
 function initNavScroll() {
     const nav = document.querySelector('.main-nav');
-    const navLogo = document.querySelector('.nav-logo');
+    const isMobile = window.innerWidth <= 768;
+    
+    // Only hide/show nav on desktop
+    if (isMobile) {
+        return; // Keep nav always visible on mobile
+    }
+    
     let lastScroll = 0;
     let ticking = false;
     
