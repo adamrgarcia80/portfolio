@@ -238,13 +238,13 @@ function animateAllText() {
 // Portal mouse interaction
 function initPortal() {
     const portal = document.getElementById('portal');
-    if (!portal) return;
+    if (!portal) {
+        console.log('Portal element not found');
+        return;
+    }
     
     let mouseX = 0;
     let mouseY = 0;
-    let clickX = 0;
-    let clickY = 0;
-    let clickTime = 0;
     
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
@@ -252,28 +252,29 @@ function initPortal() {
         
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        const offsetX = (mouseX - centerX) * 0.1;
-        const offsetY = (mouseY - centerY) * 0.1;
+        const offsetX = (mouseX - centerX) * 0.15;
+        const offsetY = (mouseY - centerY) * 0.15;
         
-        portal.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
+        portal.style.left = `calc(50% + ${offsetX}px)`;
+        portal.style.top = `calc(50% + ${offsetY}px)`;
     });
     
     document.addEventListener('click', (e) => {
-        clickX = e.clientX;
-        clickY = e.clientY;
-        clickTime = Date.now();
-        
         // Pulse effect on click
-        portal.style.width = '900px';
-        portal.style.height = '900px';
-        portal.style.opacity = '0.8';
+        portal.style.width = '1000px';
+        portal.style.height = '1000px';
+        portal.style.margin = '-500px 0 0 -500px';
+        portal.style.opacity = '0.9';
         
         setTimeout(() => {
             portal.style.width = '800px';
             portal.style.height = '800px';
-            portal.style.opacity = '0.6';
-        }, 300);
+            portal.style.margin = '-400px 0 0 -400px';
+            portal.style.opacity = '0.7';
+        }, 400);
     });
+    
+    console.log('Portal initialized');
 }
 
 // Mobile menu toggle
