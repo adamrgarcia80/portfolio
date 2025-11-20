@@ -38,7 +38,14 @@ body {
     width: 800px;
     height: 800px;
     margin: -400px 0 0 -400px;
-    background: radial-gradient(circle, rgba(255, 100, 50, 0.5) 0%, rgba(255, 150, 80, 0.3) 30%, rgba(200, 80, 40, 0.2) 50%, transparent 70%);
+    background: radial-gradient(circle, 
+        rgba(255, 100, 50, 0.5) 0%, 
+        rgba(255, 140, 70, 0.4) 15%,
+        rgba(255, 150, 80, 0.3) 25%,
+        rgba(240, 120, 60, 0.25) 35%,
+        rgba(200, 80, 40, 0.2) 45%,
+        rgba(180, 60, 30, 0.15) 55%,
+        transparent 70%);
     border-radius: 50%;
     filter: blur(100px);
     opacity: 0.5;
@@ -74,10 +81,11 @@ p, div, span, a, li, td, th, label, button, input, textarea, select, h1, h2, h3,
     color: var(--text-color) !important;
 }
 
-/* Only headers are bold */
+/* Headers use underline instead of bold */
 h1, h2, h3, h4, h5, h6, .section-label, .pillar-title, .pillar-project-title, .essay-title, .nav-logo {
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-weight: 300;
+    text-decoration: underline;
+    margin-bottom: 0.25rem;
 }
 
 /* Regular text */
@@ -168,7 +176,8 @@ main {
 
 .hero-title {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     line-height: 1.6;
     margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
@@ -188,8 +197,9 @@ main {
 
 .section-label {
     font-size: 1rem !important;
-    font-weight: 700;
-    margin-bottom: calc(var(--spacing-unit) * 2);
+    font-weight: 300;
+    text-decoration: underline;
+    margin-bottom: 0.5rem;
     letter-spacing: 0.1em;
 }
 
@@ -220,8 +230,9 @@ main {
 
 .pillar-title {
     font-size: 1rem !important;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-weight: 300;
+    text-decoration: underline;
+    margin-bottom: 0.25rem;
     letter-spacing: 0.05em;
 }
 
@@ -245,7 +256,8 @@ main {
 }
 
 .brand-node strong {
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
 }
 
 .brand-node:last-child {
@@ -275,7 +287,8 @@ main {
 
 .pillar-project-title {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     margin-bottom: 0.25rem;
 }
 
@@ -306,8 +319,9 @@ main {
 
 .essay-title {
     font-size: 1rem !important;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-weight: 300;
+    text-decoration: underline;
+    margin-bottom: 0.25rem;
 }
 
 .essay-excerpt {
@@ -370,14 +384,16 @@ footer {
 
 .content-section .text-header {
     font-size: 1rem !important;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-weight: 300;
+    text-decoration: underline;
+    margin-bottom: 0.25rem;
     text-align: left;
 }
 
 .content-section .text-body-bold {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
     text-align: left;
@@ -585,7 +601,8 @@ footer {
 
 .admin-header h1 {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     letter-spacing: 0.05em;
     margin-bottom: var(--spacing-unit);
 }
@@ -627,7 +644,8 @@ footer {
 
 .admin-section h2 {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     margin-bottom: var(--spacing-unit);
     letter-spacing: 0.03em;
 }
@@ -731,7 +749,8 @@ button:hover {
 
 .section-item h3 {
     font-size: 1rem !important;
-    font-weight: 700;
+    font-weight: 300;
+    text-decoration: underline;
     margin-bottom: 0.5rem;
     letter-spacing: 0.03em;
 }

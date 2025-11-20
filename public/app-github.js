@@ -323,6 +323,38 @@ function initMobileMenu() {
     }
 }
 
+// Navigation scroll behavior
+function initNavScroll() {
+    const nav = document.querySelector('.main-nav');
+    const navLogo = document.querySelector('.nav-logo');
+    let lastScroll = 0;
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (currentScroll > 100) {
+                    // Hide nav on scroll down
+                    if (currentScroll > lastScroll) {
+                        nav.classList.add('scrolled');
+                    } else {
+                        // Show nav on scroll up
+                        nav.classList.remove('scrolled');
+                    }
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                
+                lastScroll = currentScroll;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
 // Smooth scroll for navigation links
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize portal
@@ -330,6 +362,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize mobile menu
     initMobileMenu();
+    
+    // Initialize nav scroll
+    initNavScroll();
     
     // Handle anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
