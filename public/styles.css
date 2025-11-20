@@ -413,6 +413,7 @@ main {
 .commercial-carousel {
     position: relative;
     width: 100%;
+    max-width: 110ch;
     margin-bottom: var(--spacing-unit);
 }
 
