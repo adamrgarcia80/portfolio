@@ -2,6 +2,50 @@
 
 const GITHUB_CONFIG_KEY = 'githubConfig';
 
+// Symbolic Systems Projects (lorem ipsum placeholder data)
+const SYMBOLIC_PROJECTS = [
+    {
+        id: 'symbolic-1',
+        title: 'Mythic Architectures',
+        caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.'
+    },
+    {
+        id: 'symbolic-2',
+        title: 'Ritual Networks',
+        caption: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.'
+    },
+    {
+        id: 'symbolic-3',
+        title: 'Sacred Algorithms',
+        caption: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.'
+    },
+    {
+        id: 'symbolic-4',
+        title: 'Divine Interfaces',
+        caption: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'
+    },
+    {
+        id: 'symbolic-5',
+        title: 'Transcendent Systems',
+        caption: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt.'
+    },
+    {
+        id: 'symbolic-6',
+        title: 'Eternal Structures',
+        caption: 'Ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.'
+    }
+];
+
+// Commercial Projects Carousel Images (placeholder)
+const COMMERCIAL_IMAGES = [
+    { src: '', alt: 'Commercial Project 1' },
+    { src: '', alt: 'Commercial Project 2' },
+    { src: '', alt: 'Commercial Project 3' },
+    { src: '', alt: 'Commercial Project 4' }
+];
+
+let currentCommercialImageIndex = 0;
+
 function getGitHubConfig() {
     const stored = localStorage.getItem(GITHUB_CONFIG_KEY);
     if (stored) {
@@ -33,15 +77,11 @@ async function loadContent() {
         
         const data = await response.json();
         
-        // Load projects into pillars
-        loadProjectsIntoPillars(data.projects || []);
+        // Load symbolic projects
+        loadSymbolicProjects();
         
-        // Load images for carousel (if needed)
-        const allImages = data.images || [];
-        if (allImages.length > 0) {
-            // Optionally load carousel - can be hidden for new design
-            // await loadImageCarousel(allImages);
-        }
+        // Initialize commercial carousel
+        initCommercialCarousel();
         
         // Animate all text after content loads (only on initial load)
         if (!window.textAnimated) {
@@ -53,7 +93,143 @@ async function loadContent() {
         
     } catch (error) {
         console.error('Error loading content:', error);
+        // Still load projects even if GitHub fails
+        loadSymbolicProjects();
+        initCommercialCarousel();
     }
+}
+
+// Load Symbolic Systems Projects
+function loadSymbolicProjects() {
+    const container = document.getElementById('symbolicProjects');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    SYMBOLIC_PROJECTS.forEach(project => {
+        const projectDiv = document.createElement('div');
+        projectDiv.className = 'symbolic-project';
+        
+        // Image placeholder
+        const imageDiv = document.createElement('div');
+        imageDiv.className = 'symbolic-project-image';
+        imageDiv.textContent = 'Image';
+        
+        // Title with link
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'symbolic-project-title';
+        const titleLink = document.createElement('a');
+        titleLink.href = `project.html?id=${project.id}`;
+        titleLink.textContent = project.title;
+        titleDiv.appendChild(titleLink);
+        
+        // Caption
+        const captionDiv = document.createElement('div');
+        captionDiv.className = 'symbolic-project-caption';
+        captionDiv.textContent = project.caption;
+        
+        projectDiv.appendChild(imageDiv);
+        projectDiv.appendChild(titleDiv);
+        projectDiv.appendChild(captionDiv);
+        
+        container.appendChild(projectDiv);
+    });
+}
+
+// Initialize Commercial Carousel
+function initCommercialCarousel() {
+    const carouselContainer = document.querySelector('.carousel-image-placeholder');
+    const prevBtn = document.getElementById('carouselPrev');
+    const nextBtn = document.getElementById('carouselNext');
+    
+    if (!carouselContainer) return;
+    
+    // Create image elements for carousel
+    COMMERCIAL_IMAGES.forEach((img, index) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = img.src || '';
+        imgElement.alt = img.alt;
+        imgElement.style.display = 'none';
+        if (index === 0) {
+            imgElement.classList.add('active');
+            imgElement.style.display = 'block';
+        }
+        carouselContainer.appendChild(imgElement);
+    });
+    
+    // If no images, show placeholder
+    if (COMMERCIAL_IMAGES.length === 0 || !COMMERCIAL_IMAGES[0].src) {
+        carouselContainer.textContent = 'Image';
+    }
+    
+    function showImage(index) {
+        const images = carouselContainer.querySelectorAll('img');
+        images.forEach((img, i) => {
+            if (i === index) {
+                img.classList.add('active');
+                img.style.display = 'block';
+            } else {
+                img.classList.remove('active');
+                img.style.display = 'none';
+            }
+        });
+        
+        // If no actual images, keep placeholder text
+        if (images.length === 0 || !images[index]?.src) {
+            carouselContainer.textContent = 'Image';
+        }
+    }
+    
+    function nextImage() {
+        currentCommercialImageIndex = (currentCommercialImageIndex + 1) % COMMERCIAL_IMAGES.length;
+        showImage(currentCommercialImageIndex);
+    }
+    
+    function prevImage() {
+        currentCommercialImageIndex = (currentCommercialImageIndex - 1 + COMMERCIAL_IMAGES.length) % COMMERCIAL_IMAGES.length;
+        showImage(currentCommercialImageIndex);
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            prevImage();
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            nextImage();
+        });
+    }
+    
+    // Auto-advance carousel every 5 seconds
+    setInterval(nextImage, 5000);
+}
+
+// Commercial Password Handler
+function initCommercialPassword() {
+    const passwordInput = document.getElementById('commercialPassword');
+    const passwordBtn = document.getElementById('commercialPasswordBtn');
+    
+    if (!passwordInput || !passwordBtn) return;
+    
+    function handlePassword() {
+        const password = passwordInput.value;
+        // For now, any password works - you can change this
+        if (password.trim() !== '') {
+            window.location.href = 'commercial.html';
+        }
+    }
+    
+    passwordBtn.addEventListener('click', handlePassword);
+    
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handlePassword();
+        }
+    });
 }
 
 function loadProjectsIntoPillars(projects) {
@@ -327,6 +503,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize nav scroll
     initNavScroll();
+    
+    // Initialize commercial password
+    initCommercialPassword();
     
     // Handle anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -325,6 +325,176 @@ main {
     margin-top: 0.25rem;
 }
 
+/* Projects Subsections */
+.projects-subsection {
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.subsection-title {
+    font-size: 1rem !important;
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    letter-spacing: 0.05em;
+}
+
+/* Symbolic Systems Grid */
+.symbolic-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(var(--spacing-unit) * 2) var(--spacing-unit);
+    max-width: 100%;
+}
+
+.symbolic-project {
+    display: flex;
+    flex-direction: column;
+}
+
+.symbolic-project-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #333333;
+    margin-bottom: var(--spacing-unit);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+}
+
+.symbolic-project-title {
+    font-size: 1rem !important;
+    font-weight: 300;
+    margin-bottom: 0.25rem;
+}
+
+.symbolic-project-title a {
+    color: var(--text-color) !important;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.symbolic-project-title a:hover {
+    opacity: 0.7;
+}
+
+.symbolic-project-caption {
+    font-size: 1rem !important;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 110ch;
+}
+
+/* Commercial Projects */
+.commercial-projects-container {
+    max-width: 100%;
+}
+
+.commercial-carousel {
+    position: relative;
+    width: 100%;
+    margin-bottom: var(--spacing-unit);
+}
+
+.carousel-image-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #333333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+}
+
+.carousel-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.carousel-image-placeholder img.active {
+    display: block;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 var(--spacing-unit);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.carousel-prev,
+.carousel-next {
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    opacity: 0.7;
+}
+
+.commercial-password-container {
+    display: flex;
+    gap: var(--spacing-unit);
+    align-items: center;
+    max-width: 400px;
+}
+
+.commercial-password-input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    padding: 0.5rem;
+    outline: none;
+}
+
+.commercial-password-input:focus {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.commercial-password-button {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.commercial-password-button:hover {
+    opacity: 0.7;
+}
+
 /* Essays */
 .essays-container {
     margin-top: calc(var(--spacing-unit) * 2);
@@ -606,6 +776,19 @@ footer {
     
     .two-column-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .symbolic-projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .commercial-password-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .commercial-password-button {
+        width: 100%;
     }
 }
 

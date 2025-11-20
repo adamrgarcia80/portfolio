@@ -33,28 +33,32 @@
 
         <section id="projects" class="section">
             <h2 class="section-label">Projects</h2>
-            <div class="work-pillars">
-                <div class="pillar">
-                    <h3 class="pillar-title">Commercial & Cultural Direction</h3>
-                    <p class="pillar-description">Design work, creative direction, music & cultural projects.</p>
-                    <div class="pillar-projects" data-pillar="commercial"></div>
+            
+            <!-- Symbolic Systems Section -->
+            <div class="projects-subsection">
+                <h3 class="subsection-title">Symbolic Systems</h3>
+                <div class="symbolic-projects-grid" id="symbolicProjects">
+                    <!-- Projects will be loaded here -->
                 </div>
+            </div>
 
-                <div class="pillar">
-                    <h3 class="pillar-title">Symbolic Systems & Myth-Work</h3>
-                    <p class="pillar-description">mutant.systems, mythseed.world, Lore Core, Supplication, Public Dreams.</p>
-                    <div class="brand-nodes">
-                        <div class="brand-node"><strong>mutant.systems</strong> — workshop & lecture series on systems, purpose, decentralization.</div>
-                        <div class="brand-node"><strong>mythseed.world</strong> — an online/offline environment for evolving symbolic myth systems.</div>
-                        <div class="brand-node"><strong>Lore Core</strong> — research + generative framework around emergent cults & religions in post-apocalyptic fictions.</div>
+            <!-- Commercial Projects Section -->
+            <div class="projects-subsection">
+                <h3 class="subsection-title">Commercial Projects</h3>
+                <div class="commercial-projects-container">
+                    <div class="commercial-carousel" id="commercialCarousel">
+                        <div class="carousel-image-container">
+                            <div class="carousel-image-placeholder"></div>
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-prev" id="carouselPrev">←</button>
+                            <button class="carousel-next" id="carouselNext">→</button>
+                        </div>
                     </div>
-                    <div class="pillar-projects" data-pillar="symbolic"></div>
-                </div>
-
-                <div class="pillar">
-                    <h3 class="pillar-title">Future & Emerging Forms</h3>
-                    <p class="pillar-description">Ovation and new formats: interactive film, gamebooks, emerging narrative structures.</p>
-                    <div class="pillar-projects" data-pillar="future"></div>
+                    <div class="commercial-password-container">
+                        <input type="password" class="commercial-password-input" id="commercialPassword" placeholder="Enter password">
+                        <button class="commercial-password-button" id="commercialPasswordBtn">Access</button>
+                    </div>
                 </div>
             </div>
         </section>
