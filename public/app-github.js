@@ -462,64 +462,80 @@ function initMobileMenu() {
     const links = document.getElementById('navLinks');
     
     if (!toggle || !links) {
-        console.error('Mobile menu elements not found!', { toggle, links });
+        console.error('Mobile menu elements not found!', { 
+            toggle: !!toggle, 
+            links: !!links,
+            toggleId: document.getElementById('navToggle'),
+            linksId: document.getElementById('navLinks')
+        });
         return;
     }
     
-    console.log('Initializing mobile menu');
+    // Remove any existing listeners by cloning
+    const newToggle = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(newToggle, toggle);
+    const newLinks = links;
+    
+    console.log('Initializing mobile menu - elements found');
     
     // Simple toggle function
     function toggleMenu() {
-        const isActive = links.classList.contains('active');
+        const isActive = newLinks.classList.contains('active');
+        console.log('Toggling menu, currently active:', isActive);
         if (isActive) {
-            links.classList.remove('active');
-            toggle.classList.remove('active');
+            newLinks.classList.remove('active');
+            newToggle.classList.remove('active');
             console.log('Menu closed');
         } else {
-            links.classList.add('active');
-            toggle.classList.add('active');
-            console.log('Menu opened');
+            newLinks.classList.add('active');
+            newToggle.classList.add('active');
+            console.log('Menu opened, classes:', newLinks.className);
         }
     }
     
-    // Toggle menu on button click - use both click and mousedown for reliability
-    toggle.addEventListener('click', function(e) {
+    // Direct inline handler for maximum reliability
+    newToggle.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Button clicked');
+        console.log('Button onclick fired');
         toggleMenu();
-    });
+        return false;
+    };
     
-    toggle.addEventListener('mousedown', function(e) {
+    // Also add event listener as backup
+    newToggle.addEventListener('click', function(e) {
         e.preventDefault();
-    });
+        e.stopPropagation();
+        console.log('Button addEventListener fired');
+        toggleMenu();
+    }, true); // Use capture phase
     
     // Close menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (links.classList.contains('active')) {
-            if (!links.contains(e.target) && !toggle.contains(e.target) && !toggle.querySelector('.menu-circle')?.contains(e.target)) {
-                links.classList.remove('active');
-                toggle.classList.remove('active');
-                console.log('Menu closed - clicked outside');
+    setTimeout(() => {
+        document.addEventListener('click', function(e) {
+            if (newLinks.classList.contains('active')) {
+                const clickedInside = newLinks.contains(e.target);
+                const clickedButton = newToggle.contains(e.target);
+                if (!clickedInside && !clickedButton) {
+                    newLinks.classList.remove('active');
+                    newToggle.classList.remove('active');
+                    console.log('Menu closed - clicked outside');
+                }
             }
-        }
-    });
+        }, true);
+    }, 200);
     
     // Close menu when clicking a link
-    const menuLinks = links.querySelectorAll('a');
+    const menuLinks = newLinks.querySelectorAll('a');
     menuLinks.forEach(link => {
         link.addEventListener('click', function() {
-            links.classList.remove('active');
-            toggle.classList.remove('active');
+            newLinks.classList.remove('active');
+            newToggle.classList.remove('active');
             console.log('Menu closed - link clicked');
         });
     });
     
-    // Also handle touch events for mobile
-    toggle.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        toggleMenu();
-    });
+    console.log('Mobile menu initialized successfully');
 }
 
 // Navigation scroll behavior (desktop only)
@@ -562,8 +578,13 @@ function initNavScroll() {
 
 // Smooth scroll for navigation links
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize mobile menu
+    // Initialize mobile menu - do it immediately and also with a delay
     initMobileMenu();
+    
+    // Also try initializing after a short delay in case DOM isn't ready
+    setTimeout(() => {
+        initMobileMenu();
+    }, 100);
     
     // Initialize nav scroll
     initNavScroll();
