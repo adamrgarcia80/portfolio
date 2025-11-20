@@ -534,23 +534,13 @@ footer {
         width: 24px;
         height: 24px;
         border-radius: 50%;
-    background: #ffffff;
-    display: block;
-    position: relative;
-    z-index: 1;
+        background: #ffffff;
+        display: block;
+        position: relative;
+        z-index: 1;
         transition: transform 0.3s ease;
-    box-shadow: 0 0 12px rgba(0,0,0,0.35);
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.5);
     }
-    
-.menu-circle::after {
-    content: "";
-    position: absolute;
-    inset: -0.2rem;
-    background: rgba(0, 0, 0, 0.9);
-    filter: blur(12px);
-    border-radius: 50%;
-    z-index: -1;
-}
 
     .nav-menu-toggle.active .menu-circle {
         transform: scale(0.8);
