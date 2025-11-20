@@ -144,9 +144,10 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 main {
     margin-top: 80px;
     padding: calc(var(--spacing-unit) * 2) var(--spacing-unit);
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none;
+    margin-left: var(--spacing-unit);
+    margin-right: var(--spacing-unit);
+    text-align: left;
 }
 
 /* Hero Section - Modem style */
@@ -188,6 +189,8 @@ main {
 
 .section-content {
     max-width: var(--content-width);
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .section-content p {
