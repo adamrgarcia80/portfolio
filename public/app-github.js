@@ -43,6 +43,11 @@ async function loadContent() {
             // await loadImageCarousel(allImages);
         }
         
+        // Animate all text after content loads
+        setTimeout(() => {
+            animateAllText();
+        }, 100);
+        
     } catch (error) {
         console.error('Error loading content:', error);
     }
@@ -107,110 +112,127 @@ function loadPillarProjects(pillarType, projects) {
     });
 }
 
-async function loadImageCarousel(images) {
-    const carousel = document.getElementById('imageCarousel');
-    if (!carousel) return;
+// Animate all text word-by-word from top-left to bottom-right
+function animateAllText() {
+    // Get all text-containing elements (excluding script, style, etc.)
+    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .pillar-title, .pillar-description, .brand-node, .pillar-project-title, .pillar-project-meta, .essay-title, .essay-excerpt, .contact-content, .practice-text, .hero-headline, .hero-subtext, .nav-logo, .nav-links a, .section-title');
     
-    if (images.length === 0) {
-        carousel.style.display = 'none';
-        return;
-    }
+    const allWords = [];
     
-    // Stop existing carousel
-    if (carouselInterval) {
-        clearInterval(carouselInterval);
-        carouselInterval = null;
-    }
-    currentImageIndex = 0;
-    
-    carousel.style.display = 'block';
-    carousel.style.opacity = '0';
-    carousel.innerHTML = '';
-    
-    let loadedCount = 0;
-    let maxHeight = 0;
-    let firstImageLoaded = false;
-    
-    const updateCarouselHeight = () => {
-        if (loadedCount === images.length) {
-            carousel.style.height = (maxHeight + 50) + 'px';
-            
-            if (!firstImageLoaded) {
-                firstImageLoaded = true;
-                carousel.style.transition = 'opacity 0.6s ease-in';
-                carousel.style.opacity = '1';
-            }
-            
-            setTimeout(() => {
-                startCarousel(images.length);
-            }, 600);
-        }
-    };
-    
-    images.forEach((image, index) => {
-        const link = document.createElement('a');
-        link.href = image.projectId ? `project.html?id=${image.projectId}` : '#';
-        link.className = 'carousel-link';
-        link.style.display = 'block';
-        link.style.width = '100%';
-        link.style.maxWidth = '1200px';
-        
-        const img = document.createElement('img');
-        img.src = image.url;
-        img.alt = image.name || 'Image';
-        img.className = 'carousel-image';
-        if (index === 0) {
-            img.classList.add('active');
-            link.classList.add('active');
+    textElements.forEach(element => {
+        // Skip if already animated or if element is hidden
+        if (element.classList.contains('animated') || element.offsetParent === null) {
+            return;
         }
         
-        img.onload = function() {
-            const maxWidth = 1200;
-            const aspectRatio = this.naturalWidth / this.naturalHeight;
-            const displayHeight = Math.min(this.naturalHeight, maxWidth / aspectRatio);
-            
-            if (displayHeight > maxHeight) {
-                maxHeight = displayHeight;
+        // Get original text
+        const originalText = element.textContent || element.innerText;
+        if (!originalText || originalText.trim() === '') return;
+        
+        // Get element position
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        const top = rect.top + scrollTop;
+        const left = rect.left + scrollLeft;
+        
+        // Split text into words (preserving spaces)
+        const words = originalText.split(/(\s+)/);
+        let currentLeft = left;
+        
+        words.forEach((word, wordIndex) => {
+            if (word.trim() === '' && word !== '') {
+                // It's whitespace - add it but don't animate
+                allWords.push({
+                    type: 'space',
+                    content: word,
+                    element: element,
+                    top: top,
+                    left: currentLeft,
+                    wordIndex: wordIndex
+                });
+                // Estimate space width (rough approximation)
+                currentLeft += 5; // Average space width
+            } else if (word.trim() !== '') {
+                // It's a word
+                allWords.push({
+                    type: 'word',
+                    content: word,
+                    element: element,
+                    top: top,
+                    left: currentLeft,
+                    wordIndex: wordIndex,
+                    originalHTML: element.innerHTML
+                });
+                // Estimate word width (rough approximation: 8px per character)
+                currentLeft += word.length * 8;
             }
-            
-            loadedCount++;
-            updateCarouselHeight();
-        };
+        });
         
-        img.onerror = function() {
-            loadedCount++;
-            updateCarouselHeight();
-        };
-        
-        link.appendChild(img);
-        carousel.appendChild(link);
+        // Mark element as processed
+        element.classList.add('animated');
     });
-}
-
-let carouselInterval = null;
-let currentImageIndex = 0;
-
-function startCarousel(totalImages) {
-    if (totalImages === 0) return;
     
-    if (carouselInterval) {
-        clearInterval(carouselInterval);
-    }
+    // Sort words by position: top to bottom, then left to right
+    allWords.sort((a, b) => {
+        // First by vertical position (top)
+        if (Math.abs(a.top - b.top) > 20) {
+            return a.top - b.top;
+        }
+        // Then by horizontal position (left)
+        return a.left - b.left;
+    });
     
-    carouselInterval = setInterval(() => {
-        const links = document.querySelectorAll('.carousel-link');
-        if (links.length === 0) return;
-        
-        links[currentImageIndex].classList.remove('active');
-        const currentImg = links[currentImageIndex].querySelector('.carousel-image');
-        if (currentImg) currentImg.classList.remove('active');
-        
-        currentImageIndex = (currentImageIndex + 1) % links.length;
-        
-        links[currentImageIndex].classList.add('active');
-        const nextImg = links[currentImageIndex].querySelector('.carousel-image');
-        if (nextImg) nextImg.classList.add('active');
-    }, 800);
+    // Clear all elements and prepare for animation
+    const elementGroups = new Map();
+    allWords.forEach(word => {
+        if (!elementGroups.has(word.element)) {
+            elementGroups.set(word.element, {
+                element: word.element,
+                originalHTML: word.originalHTML || word.element.innerHTML,
+                words: []
+            });
+        }
+        elementGroups.get(word.element).words.push(word);
+    });
+    
+    // Clear and prepare elements
+    elementGroups.forEach(group => {
+        group.element.innerHTML = '';
+        group.element.style.position = 'relative';
+    });
+    
+    // Animate words
+    let globalWordIndex = 0;
+    allWords.forEach(word => {
+        if (word.type === 'space') {
+            // Add space directly
+            word.element.appendChild(document.createTextNode(word.content));
+        } else if (word.type === 'word') {
+            // Create span for word
+            const span = document.createElement('span');
+            span.className = 'animated-word';
+            span.textContent = word.content;
+            span.style.opacity = '0';
+            span.style.display = 'inline';
+            word.element.appendChild(span);
+            
+            // Add space after word (except last word in element)
+            const group = elementGroups.get(word.element);
+            const isLastWord = word === group.words[group.words.length - 1];
+            if (!isLastWord) {
+                word.element.appendChild(document.createTextNode(' '));
+            }
+            
+            // Animate with delay based on position
+            setTimeout(() => {
+                span.style.transition = 'opacity 0.4s ease-in';
+                span.style.opacity = '1';
+            }, globalWordIndex * 20); // 20ms delay per word
+            
+            globalWordIndex++;
+        }
+    });
 }
 
 // Smooth scroll for navigation links
