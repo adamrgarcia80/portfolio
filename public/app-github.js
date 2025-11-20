@@ -162,13 +162,16 @@ function loadSymbolicProjects() {
             const imageDiv = document.createElement('div');
             imageDiv.className = 'symbolic-project-image';
             if (project.image) {
+                const imageLink = document.createElement('a');
+                imageLink.href = `project.html?id=${project.id}`;
                 const img = document.createElement('img');
                 img.src = project.image;
                 img.alt = project.title;
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
-                imageDiv.appendChild(img);
+                imageLink.appendChild(img);
+                imageDiv.appendChild(imageLink);
             }
             
             projectDiv.appendChild(titleDiv);
