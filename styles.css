@@ -112,9 +112,9 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 .nav-logo::after {
     content: "";
     position: absolute;
-    inset: -0.15rem -0.3rem;
-    background: rgba(0, 0, 0, 1);
-    filter: blur(45px);
+    inset: 0;
+    background: transparent;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.95);
     border-radius: 6px;
     z-index: -1;
 }
@@ -173,9 +173,9 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 .nav-links a::after {
     content: "";
     position: absolute;
-    inset: -0.15rem -0.35rem;
-    background: rgba(0, 0, 0, 1);
-    filter: blur(32px);
+    inset: 0;
+    background: transparent;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.95);
     border-radius: 6px;
     z-index: -1;
 }
