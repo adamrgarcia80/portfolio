@@ -108,7 +108,7 @@ h1, h2, h3, h4, h5, h6, .section-label, .pillar-title, .pillar-project-title, .e
 .pillar-project-title::before,
 .essay-title::before,
 .hero-title::before {
-    content: "— ";
+    content: "—";
 }
 
 /* Regular text */
@@ -159,9 +159,12 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 .nav-logo {
     font-size: 1rem !important;
     font-weight: 300;
-    color: var(--text-color) !important;
+    color: #000000 !important;
+    background: #ffffff;
     text-decoration: none;
     letter-spacing: 0.05em;
+    padding: 0.25rem 0.5rem;
+    display: inline-block;
 }
 
 .nav-logo:hover {
@@ -421,7 +424,7 @@ footer {
 }
 
 .content-section .text-header::before {
-    content: "— ";
+    content: "—";
 }
 
 .content-section .text-body-bold {
@@ -433,7 +436,7 @@ footer {
 }
 
 .content-section .text-body-bold::before {
-    content: "— ";
+    content: "—";
 }
 
 .content-section .text-body-regular {
@@ -534,6 +537,7 @@ footer {
         justify-content: space-between;
         align-items: center;
         padding: var(--spacing-unit);
+        z-index: 1002;
     }
     
     .nav-logo {
@@ -541,7 +545,10 @@ footer {
         position: fixed;
         top: var(--spacing-unit);
         left: var(--spacing-unit);
-        z-index: 1002;
+        z-index: 1003;
+        color: #000000 !important;
+        background: #ffffff;
+        padding: 0.25rem 0.5rem;
     }
     
     .nav-menu-toggle {
@@ -556,7 +563,7 @@ footer {
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1001;
+        z-index: 1003;
         padding: 0;
     }
     
@@ -583,9 +590,9 @@ footer {
         background: rgba(0, 0, 0, 0.95);
         padding: calc(var(--spacing-unit) * 3) var(--spacing-unit) var(--spacing-unit);
         flex-direction: column;
-        gap: var(--spacing-unit);
+        gap: 0.5rem;
         transition: right 0.3s ease-out;
-        z-index: 1000;
+        z-index: 1001;
         overflow-y: auto;
     }
     
@@ -596,8 +603,10 @@ footer {
     .nav-links a {
         text-align: left;
         width: 100%;
-        padding: 0.75rem;
+        padding: 0.5rem;
         font-size: 1rem;
+        text-decoration: underline;
+        line-height: 1.2;
     }
     
     main {
@@ -660,7 +669,7 @@ footer {
 }
 
 .admin-header h1::before {
-    content: "— ";
+    content: "—";
 }
 
 .auth-form {
@@ -706,7 +715,7 @@ footer {
 }
 
 .admin-section h2::before {
-    content: "— ";
+    content: "—";
 }
 
 .form-group {
@@ -814,7 +823,7 @@ button:hover {
 }
 
 .section-item h3::before {
-    content: "— ";
+    content: "—";
 }
 
 .section-item p {
