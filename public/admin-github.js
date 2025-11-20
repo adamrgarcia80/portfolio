@@ -24,6 +24,12 @@ function showGitHubSetup() {
     const adminContent = document.getElementById('adminContent');
     if (!adminContent) return;
     
+    // Clear any existing error messages
+    const existingError = document.getElementById('loadError');
+    if (existingError) {
+        existingError.remove();
+    }
+    
     adminContent.innerHTML = `
         <div class="admin-section">
             <h2>GitHub Setup Required</h2>
@@ -72,6 +78,7 @@ function showGitHubSetup() {
             </div>
             
             <button onclick="saveGitHubConfig()" style="width: 100%; margin-top: 1rem; padding: 0.75rem;">Save Configuration</button>
+            <div id="githubConfigStatus" style="margin-top: 1rem; font-size: 0.9rem;"></div>
         </div>
     `;
 }
@@ -92,12 +99,28 @@ async function saveGitHubConfig() {
     saveGitHubConfig(config);
     
     // Test connection
+    const statusDiv = document.getElementById('githubConfigStatus');
+    if (statusDiv) {
+        statusDiv.innerHTML = '<span style="opacity: 0.7;">Testing connection...</span>';
+    }
+    
     try {
         await getContentFromGitHub();
-        alert('GitHub connection successful!');
-        location.reload();
+        if (statusDiv) {
+            statusDiv.innerHTML = '<span class="success">GitHub connection successful! Reloading...</span>';
+        } else {
+            alert('GitHub connection successful!');
+        }
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
     } catch (error) {
-        alert('Connection failed: ' + error.message);
+        console.error('Connection test failed:', error);
+        if (statusDiv) {
+            statusDiv.innerHTML = `<span class="error">Connection failed: ${error.message}</span>`;
+        } else {
+            alert('Connection failed: ' + error.message);
+        }
     }
 }
 
@@ -192,13 +215,27 @@ async function loadContent() {
     try {
         const config = getGitHubConfig();
         if (!config) {
-            return; // Will show setup screen
+            // Show setup screen if not configured
+            showGitHubSetup();
+            return;
         }
         
         contentData = await getContentFromGitHub();
         if (!contentData.projects) contentData.projects = [];
         if (!contentData.images) contentData.images = [];
         if (!contentData.sections) contentData.sections = [];
+        
+        // Make sure admin interface is loaded
+        const adminContent = document.getElementById('adminContent');
+        if (adminContent && !adminContent.querySelector('#projectsList')) {
+            loadAdminInterface();
+        }
+        
+        // Clear any existing error messages
+        const existingError = document.getElementById('loadError');
+        if (existingError) {
+            existingError.remove();
+        }
         
         loadProjects(contentData.projects);
         
@@ -207,15 +244,45 @@ async function loadContent() {
         }
     } catch (error) {
         console.error('Error loading content:', error);
+        
+        // If error is about GitHub not configured, show setup screen
+        if (error.message && (error.message.includes('not configured') || error.message.includes('GitHub not configured'))) {
+            showGitHubSetup();
+            return;
+        }
+        
+        // For other errors, show error but don't replace entire interface
         const adminContent = document.getElementById('adminContent');
         if (adminContent) {
-            adminContent.innerHTML = `
-                <div class="admin-section">
-                    <h2>Error</h2>
-                    <p style="opacity: 0.7;">Error loading from GitHub: ${error.message}</p>
-                    <button onclick="location.reload()" style="margin-top: 1rem;">Retry</button>
-                </div>
-            `;
+            // Only replace if we don't have the admin interface loaded
+            if (!adminContent.querySelector('#projectsList')) {
+                adminContent.innerHTML = `
+                    <div class="admin-section">
+                        <h2>Error</h2>
+                        <p style="opacity: 0.7;">Error loading from GitHub: ${error.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 1rem;">Retry</button>
+                        <button onclick="showGitHubSetup()" style="margin-top: 0.5rem;">Configure GitHub</button>
+                    </div>
+                `;
+            } else {
+                // If interface is loaded, just show a temporary error message
+                const errorDiv = document.createElement('div');
+                errorDiv.id = 'loadError';
+                errorDiv.style.cssText = 'padding: 0.75rem; margin: 1rem 0; background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 3px;';
+                errorDiv.innerHTML = `<p style="margin: 0; opacity: 0.9;">Error loading: ${error.message}. <a href="#" onclick="location.reload(); return false;" style="color: var(--text-color); text-decoration: underline;">Retry</a></p>`;
+                
+                const firstSection = adminContent.querySelector('.admin-section');
+                if (firstSection) {
+                    adminContent.insertBefore(errorDiv, firstSection);
+                    
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        if (errorDiv.parentElement) {
+                            errorDiv.remove();
+                        }
+                    }, 5000);
+                }
+            }
         }
     }
 }

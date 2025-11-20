@@ -574,3 +574,330 @@ button:hover {
     margin-top: 0.5rem;
 }
 
+/* New Site Design Styles */
+
+/* Navigation */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-unit) 0;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-logo {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text-color);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.nav-logo:hover {
+    opacity: 0.7;
+}
+
+.nav-links {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.nav-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 0.7;
+}
+
+/* Hero Section */
+.hero-section {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    padding: calc(var(--spacing-unit) * 2) 0;
+}
+
+.manifesto {
+    max-width: 900px;
+}
+
+.hero-headline {
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-unit);
+    letter-spacing: -0.02em;
+}
+
+.hero-subtext {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.5;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* Sections */
+.section {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    padding: calc(var(--spacing-unit) * 2) 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Practice Section */
+.practice-section {
+    max-width: 800px;
+}
+
+.practice-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-unit);
+}
+
+.practice-text {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Work Section & Pillars */
+.work-section {
+    max-width: 1200px;
+}
+
+.pillars-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 3);
+}
+
+.pillar {
+    padding: calc(var(--spacing-unit) * 2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: border-color 0.3s;
+}
+
+.pillar:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.commercial-pillar {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.symbolic-pillar {
+    background: rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.symbolic-pillar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: glitch-line 3s infinite;
+}
+
+@keyframes glitch-line {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; transform: translateX(2px); }
+}
+
+.future-pillar {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.pillar-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.03em;
+}
+
+.pillar-description {
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.8;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    line-height: 1.5;
+}
+
+.pillar-brands {
+    margin: calc(var(--spacing-unit) * 1.5) 0;
+    padding: var(--spacing-unit);
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.brand-node {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-unit);
+    opacity: 0.9;
+}
+
+.brand-node strong {
+    font-weight: 500;
+    opacity: 1;
+}
+
+.brand-node:last-child {
+    margin-bottom: 0;
+}
+
+.pillar-projects {
+    margin-top: calc(var(--spacing-unit) * 1.5);
+}
+
+.pillar-project {
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    padding: var(--spacing-unit);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s;
+}
+
+.pillar-project:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.pillar-project-link {
+    text-decoration: none;
+    color: var(--text-color);
+    display: block;
+}
+
+.pillar-project-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.02em;
+}
+
+.pillar-project-title:hover {
+    text-decoration: underline;
+}
+
+.pillar-project-meta {
+    font-size: 0.85rem;
+    font-weight: 300;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+/* Thinking Section */
+.thinking-section {
+    max-width: 800px;
+}
+
+.essays-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.essay-item {
+    padding: var(--spacing-unit);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: opacity 0.2s;
+}
+
+.essay-item:hover {
+    opacity: 0.8;
+}
+
+.essay-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+.essay-excerpt {
+    font-size: 0.9rem;
+    font-weight: 300;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+.placeholder-text {
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Contact Section */
+.contact-section {
+    max-width: 800px;
+}
+
+.contact-content {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+.contact-links {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 2);
+    margin-top: var(--spacing-unit);
+}
+
+.contact-link {
+    color: var(--text-color);
+    text-decoration: underline;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+}
+
+.contact-link:hover {
+    opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-unit);
+    }
+    
+    .nav-links {
+        flex-wrap: wrap;
+    }
+    
+    .hero-headline {
+        font-size: 1.8rem;
+    }
+    
+    .pillar {
+        padding: var(--spacing-unit);
+    }
+    
+    .contact-links {
+        flex-direction: column;
+        gap: var(--spacing-unit);
+    }
+}
+
