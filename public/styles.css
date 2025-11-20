@@ -221,10 +221,24 @@ main {
     max-width: 100%;
 }
 
-.section-content p {
+.section-content p,
+    .pillar-description,
+    .brand-node,
+    .pillar-project-meta,
+    .essay-excerpt,
+    .contact-content {
+        margin-bottom: var(--spacing-unit);
+        line-height: 1.6;
+        max-width: 100%;
+    }
+.pillar-description,
+.brand-node,
+.pillar-project-meta,
+.essay-excerpt,
+.contact-content {
     margin-bottom: var(--spacing-unit);
     line-height: 1.6;
-    max-width: 60ch;
+    max-width: 110ch;
 }
 
 .section-content p:last-child {
