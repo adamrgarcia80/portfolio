@@ -128,7 +128,6 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     display: flex;
     gap: calc(var(--spacing-unit) * 1.5);
     align-items: center;
-    position: relative;
 }
 
 .nav-menu-toggle {
@@ -152,21 +151,6 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     font-weight: 300;
     letter-spacing: 0.05em;
     transition: opacity 0.2s;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    line-height: 1;
-    z-index: 1;
-}
-
-.nav-links a::after {
-    content: "";
-    position: absolute;
-    inset: -0.2rem -0.4rem;
-    background: rgba(0, 0, 0, 0.99);
-    filter: blur(18px);
-    border-radius: 6px;
-    z-index: -1;
 }
 
 .nav-links a:hover {
@@ -551,18 +535,15 @@ footer {
         position: absolute;
         top: calc(100% + 0.5rem);
         right: 0;
-        min-width: 220px;
-        background: rgba(0, 0, 0, 0.9);
-        padding: var(--spacing-unit);
+        padding: 0;
+        background: transparent;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-        transform: translateY(-10px);
+        gap: 0.4rem;
+        transform: translateY(-8px);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
-        border-radius: 4px;
         z-index: 1001;
     }
     
@@ -574,8 +555,7 @@ footer {
     
     .nav-links a {
         text-align: left;
-        width: 100%;
-        padding: 0.25rem 0;
+        padding: 0.1rem 0;
         font-size: 1rem;
         color: #ffffff !important;
         text-decoration: none;
@@ -584,9 +564,9 @@ footer {
     }
 
     .nav-links a + a {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 0.25rem;
-        margin-top: 0.25rem;
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
     }
     
     main {
