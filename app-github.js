@@ -130,94 +130,54 @@ async function loadContent() {
 }
 
 // Load Symbolic Systems Projects
+// Note: Projects are now hardcoded in HTML as fallback
+// This function can be used to update them dynamically if needed
 function loadSymbolicProjects() {
-    console.log('loadSymbolicProjects called');
-    console.log('SYMBOLIC_PROJECTS length:', SYMBOLIC_PROJECTS ? SYMBOLIC_PROJECTS.length : 'undefined');
-    
-    // Wait a moment to ensure DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadSymbolicProjects, 100);
-        });
-        return;
-    }
-    
-    // Load body copy
+    // Projects are already in HTML, so we just ensure body copy is there
     const bodyContainer = document.getElementById('symbolicSystemsBody');
-    if (bodyContainer) {
-        if (!bodyContainer.querySelector('p')) {
-            const bodyParagraph = document.createElement('p');
-            bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
-            bodyContainer.appendChild(bodyParagraph);
-            console.log('Body copy loaded');
-        }
-    } else {
-        console.error('symbolicSystemsBody container not found!');
+    if (bodyContainer && !bodyContainer.querySelector('p')) {
+        const bodyParagraph = document.createElement('p');
+        bodyParagraph.textContent = SYMBOLIC_SYSTEMS_BODY;
+        bodyContainer.appendChild(bodyParagraph);
     }
     
-    // Load projects
+    // If container is empty (shouldn't happen now), load from JS
     const container = document.getElementById('symbolicProjects');
-    if (!container) {
-        console.error('Symbolic projects container not found!');
-        // Try again after a short delay
-        setTimeout(loadSymbolicProjects, 500);
-        return;
+    if (container && container.children.length === 0 && SYMBOLIC_PROJECTS && SYMBOLIC_PROJECTS.length > 0) {
+        SYMBOLIC_PROJECTS.forEach((project) => {
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'symbolic-project';
+            
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'symbolic-project-image';
+            if (project.image) {
+                const img = document.createElement('img');
+                img.src = project.image;
+                img.alt = project.title;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                imageDiv.appendChild(img);
+            }
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'symbolic-project-title';
+            const titleLink = document.createElement('a');
+            titleLink.href = `project.html?id=${project.id}`;
+            titleLink.textContent = project.title;
+            titleDiv.appendChild(titleLink);
+            
+            const captionDiv = document.createElement('div');
+            captionDiv.className = 'symbolic-project-caption';
+            captionDiv.textContent = project.caption;
+            
+            projectDiv.appendChild(imageDiv);
+            projectDiv.appendChild(titleDiv);
+            projectDiv.appendChild(captionDiv);
+            
+            container.appendChild(projectDiv);
+        });
     }
-    
-    // Only load if container is empty
-    if (container.children.length > 0) {
-        console.log('Projects already loaded, skipping');
-        return;
-    }
-    
-    console.log('Container found, loading', SYMBOLIC_PROJECTS.length, 'projects');
-    
-    if (!SYMBOLIC_PROJECTS || SYMBOLIC_PROJECTS.length === 0) {
-        console.error('SYMBOLIC_PROJECTS is empty or undefined!');
-        return;
-    }
-    
-    SYMBOLIC_PROJECTS.forEach((project, index) => {
-        console.log('Loading project', index + 1, ':', project.title);
-        const projectDiv = document.createElement('div');
-        projectDiv.className = 'symbolic-project';
-        
-        // Image
-        const imageDiv = document.createElement('div');
-        imageDiv.className = 'symbolic-project-image';
-        if (project.image) {
-            const img = document.createElement('img');
-            img.src = project.image;
-            img.alt = project.title;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            imageDiv.appendChild(img);
-        } else {
-            imageDiv.textContent = 'Image';
-        }
-        
-        // Title with link
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'symbolic-project-title';
-        const titleLink = document.createElement('a');
-        titleLink.href = `project.html?id=${project.id}`;
-        titleLink.textContent = project.title;
-        titleDiv.appendChild(titleLink);
-        
-        // Caption
-        const captionDiv = document.createElement('div');
-        captionDiv.className = 'symbolic-project-caption';
-        captionDiv.textContent = project.caption;
-        
-        projectDiv.appendChild(imageDiv);
-        projectDiv.appendChild(titleDiv);
-        projectDiv.appendChild(captionDiv);
-        
-        container.appendChild(projectDiv);
-    });
-    
-    console.log('All projects loaded. Container now has', container.children.length, 'children');
 }
 
 // Load Commercial Projects Body Copy
