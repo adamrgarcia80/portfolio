@@ -726,8 +726,8 @@ footer {
     .nav-links {
         position: fixed !important;
         top: calc(var(--spacing-unit) + 40px + 0.5rem) !important;
-        left: var(--spacing-unit) !important;
-        transform: translateX(-120%) !important;
+        left: 0 !important;
+        transform: translateX(-100%) !important;
         width: 200px !important;
         max-width: 60vw !important;
         padding: var(--spacing-unit) !important;
@@ -736,7 +736,7 @@ footer {
         display: flex !important;
         flex-direction: column !important;
         gap: 0.5rem !important;
-        border-radius: 4px !important;
+        border-radius: 0 4px 4px 0 !important;
         opacity: 0 !important;
         visibility: hidden !important;
         pointer-events: none !important;
