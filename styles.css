@@ -30,61 +30,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Portal Background */
-.portal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 800px;
-    height: 800px;
-    margin: -400px 0 0 -400px;
-    background: radial-gradient(circle, 
-        rgba(255, 120, 60, 0.7) 0%, 
-        rgba(200, 50, 100, 0.6) 5%,
-        rgba(150, 80, 200, 0.55) 10%,
-        rgba(255, 140, 70, 0.5) 15%,
-        rgba(60, 100, 180, 0.45) 20%,
-        rgba(180, 60, 150, 0.4) 25%,
-        rgba(255, 150, 80, 0.4) 30%,
-        rgba(240, 120, 60, 0.35) 35%,
-        rgba(80, 120, 200, 0.3) 40%,
-        rgba(200, 80, 40, 0.3) 45%,
-        rgba(120, 80, 180, 0.25) 50%,
-        rgba(50, 80, 150, 0.2) 55%,
-        rgba(180, 60, 30, 0.2) 60%,
-        transparent 70%);
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.65;
-    pointer-events: none;
-    z-index: 0;
-    animation: breathe 4s ease-in-out infinite, colorShift 12s ease-in-out infinite;
-    will-change: transform, opacity, width, height, left, top, filter;
-}
-
-@keyframes breathe {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.6;
-    }
-    50% {
-        transform: scale(1.15);
-        opacity: 0.8;
-    }
-}
-
-@keyframes colorShift {
-    0%, 100% {
-        filter: blur(100px) hue-rotate(0deg);
-    }
-    33% {
-        filter: blur(100px) hue-rotate(15deg);
-    }
-    66% {
-        filter: blur(100px) hue-rotate(-10deg);
-    }
-}
-
 body > * {
     position: relative;
     z-index: 1;
@@ -162,12 +107,9 @@ a:hover, .nav-links a:hover, .contact-link:hover {
 .nav-logo {
     font-size: 1rem !important;
     font-weight: 300;
-    color: #000000 !important;
-    background: #ffffff;
+    color: var(--text-color) !important;
     text-decoration: none;
     letter-spacing: 0.05em;
-    padding: 0.25rem 0.5rem;
-    display: inline-block;
 }
 
 .nav-logo:hover {
@@ -546,13 +488,13 @@ footer {
     
     .nav-logo {
         display: block;
-        position: fixed;
-        top: var(--spacing-unit);
-        left: var(--spacing-unit);
-        z-index: 1003;
-        color: #000000 !important;
-        background: #ffffff;
-        padding: 0.25rem 0.5rem;
+        position: relative;
+        top: auto;
+        left: auto;
+        z-index: auto;
+        color: var(--text-color) !important;
+        background: transparent;
+        padding: 0;
     }
     
     .nav-menu-toggle {

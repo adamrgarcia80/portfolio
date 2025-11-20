@@ -43,10 +43,13 @@ async function loadContent() {
             // await loadImageCarousel(allImages);
         }
         
-        // Animate all text after content loads
-        setTimeout(() => {
-            animateAllText();
-        }, 100);
+        // Animate all text after content loads (only on initial load)
+        if (!window.textAnimated) {
+            setTimeout(() => {
+                animateAllText();
+                window.textAnimated = true;
+            }, 100);
+        }
         
     } catch (error) {
         console.error('Error loading content:', error);
@@ -112,14 +115,19 @@ function loadPillarProjects(pillarType, projects) {
     });
 }
 
-// Animate all text word-by-word from top-left to bottom-right
+// Animate all text word-by-word from top-left to bottom-right on initial load
 function animateAllText() {
-    // Get all text-containing elements (excluding script, style, etc.)
-    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .pillar-title, .pillar-description, .brand-node, .pillar-project-title, .pillar-project-meta, .essay-title, .essay-excerpt, .contact-content, .practice-text, .hero-headline, .hero-subtext, .nav-logo, .nav-links a, .section-title');
+    // Get all text-containing elements (excluding menu and already animated)
+    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .pillar-title, .pillar-description, .brand-node, .pillar-project-title, .pillar-project-meta, .essay-title, .essay-excerpt, .contact-content, .practice-text, .section-label, .nav-logo');
     
     const allWords = [];
     
     textElements.forEach(element => {
+        // Skip menu elements
+        if (element.closest('.nav-links') || element.classList.contains('nav-menu-toggle') || element.querySelector('.menu-circle')) {
+            return;
+        }
+        
         // Skip if already animated or if element is hidden
         if (element.classList.contains('animated') || element.offsetParent === null) {
             return;
@@ -202,7 +210,7 @@ function animateAllText() {
         group.element.style.position = 'relative';
     });
     
-    // Animate words
+    // Animate words quickly
     let globalWordIndex = 0;
     allWords.forEach(word => {
         if (word.type === 'space') {
@@ -224,96 +232,18 @@ function animateAllText() {
                 word.element.appendChild(document.createTextNode(' '));
             }
             
-            // Animate with delay based on position
+            // Animate with quick delay based on position
             setTimeout(() => {
-                span.style.transition = 'opacity 0.4s ease-in';
+                span.style.transition = 'opacity 0.3s ease-in';
                 span.style.opacity = '1';
-            }, globalWordIndex * 20); // 20ms delay per word
+            }, globalWordIndex * 15); // 15ms delay per word for quick fade-in
             
             globalWordIndex++;
         }
     });
 }
 
-// Portal mouse interaction
-function initPortal() {
-    const portal = document.getElementById('portal');
-    if (!portal) {
-        console.log('Portal element not found');
-        return;
-    }
-    
-    // Detect mobile
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-    
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    
-    // Smooth mouse following with easing and more dynamism
-    function updatePortalPosition() {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        
-        // Calculate target offset from mouse position with more dynamic response
-        const distanceX = mouseX - centerX;
-        const distanceY = mouseY - centerY;
-        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-        const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
-        const normalizedDistance = Math.min(distance / maxDistance, 1);
-        
-        // More dynamic following - stronger when mouse is further from center
-        const followStrength = 0.15 + (normalizedDistance * 0.15);
-        targetX = distanceX * followStrength;
-        targetY = distanceY * followStrength;
-        
-        // Smooth interpolation with slight overshoot for dynamism
-        const easeFactor = 0.08;
-        currentX += (targetX - currentX) * easeFactor;
-        currentY += (targetY - currentY) * easeFactor;
-        
-        // Add subtle random drift for more organic movement
-        const driftX = (Math.random() - 0.5) * 2;
-        const driftY = (Math.random() - 0.5) * 2;
-        
-        portal.style.left = `calc(50% + ${currentX + driftX}px)`;
-        portal.style.top = `calc(50% + ${currentY + driftY}px)`;
-        
-        requestAnimationFrame(updatePortalPosition);
-    }
-    
-    // Start continuous position update
-    updatePortalPosition();
-    
-    // Track mouse movement
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-    
-    // Click pulse only on desktop
-    if (!isMobile) {
-        document.addEventListener('click', (e) => {
-            // Gentle but snappy pulse
-            portal.style.width = '900px';
-            portal.style.height = '900px';
-            portal.style.margin = '-450px 0 0 -450px';
-            portal.style.opacity = '0.7';
-            
-            setTimeout(() => {
-                portal.style.width = '800px';
-                portal.style.height = '800px';
-                portal.style.margin = '-400px 0 0 -400px';
-                portal.style.opacity = '0.5';
-            }, 300);
-        });
-    }
-    
-    console.log('Portal initialized', isMobile ? '(mobile mode)' : '(desktop mode)');
-}
+// Portal removed - no initialization needed
 
 // Mobile menu toggle
 function initMobileMenu() {
@@ -376,9 +306,6 @@ function initNavScroll() {
 
 // Smooth scroll for navigation links
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize portal
-    initPortal();
-    
     // Initialize mobile menu
     initMobileMenu();
     
@@ -399,8 +326,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Load content
+    // Load content and animate text
     loadContent();
+    
+    // Animate text on initial load
+    setTimeout(() => {
+        animateAllText();
+    }, 200);
 });
 
 // Also load when page becomes visible (in case admin updated it)
