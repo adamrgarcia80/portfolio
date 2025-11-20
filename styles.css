@@ -752,7 +752,7 @@ footer {
     }
     
     .nav-links a {
-        text-align: left;
+        text-align: right;
         padding: 0.5rem 0;
         font-size: 1rem;
         color: #ffffff !important;
