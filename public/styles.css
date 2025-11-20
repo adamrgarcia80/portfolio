@@ -113,7 +113,7 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     content: "";
     position: absolute;
     inset: -0.2rem -0.4rem;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.98);
     filter: blur(16px);
     border-radius: 6px;
     z-index: -1;
@@ -546,8 +546,8 @@ footer {
     content: "";
     position: absolute;
     inset: -0.2rem;
-    background: rgba(0, 0, 0, 0.75);
-    filter: blur(10px);
+    background: rgba(0, 0, 0, 0.9);
+    filter: blur(12px);
     border-radius: 50%;
     z-index: -1;
 }
