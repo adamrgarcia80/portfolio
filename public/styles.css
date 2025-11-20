@@ -111,8 +111,8 @@ a:hover, .nav-links a:hover, .contact-link:hover {
     content: "";
     position: absolute;
     inset: -0.2rem -0.4rem;
-    background: rgba(0, 0, 0, 0.6);
-    filter: blur(6px);
+    background: rgba(0, 0, 0, 0.85);
+    filter: blur(10px);
     border-radius: 6px;
     z-index: -1;
 }
@@ -518,10 +518,22 @@ footer {
         height: 24px;
         border-radius: 50%;
         background: var(--text-color);
-        display: block;
+    display: block;
+    position: relative;
+    z-index: 1;
         transition: transform 0.3s ease;
     }
     
+.menu-circle::after {
+    content: "";
+    position: absolute;
+    inset: -0.2rem;
+    background: rgba(0, 0, 0, 0.85);
+    filter: blur(8px);
+    border-radius: 50%;
+    z-index: -1;
+}
+
     .nav-menu-toggle.active .menu-circle {
         transform: scale(0.8);
         opacity: 0.8;
@@ -533,11 +545,13 @@ footer {
         right: -50%;
         width: 50%;
         height: 100vh;
-        background: rgba(0, 0, 0, 0.95);
+        background: #ffffff;
         padding: calc(var(--spacing-unit) * 3) var(--spacing-unit) var(--spacing-unit);
+        display: flex;
         flex-direction: column;
         gap: 0.5rem;
         transition: right 0.3s ease-out;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
         z-index: 1001;
         overflow-y: auto;
     }
@@ -551,6 +565,7 @@ footer {
         width: 100%;
         padding: 0.5rem;
         font-size: 1rem;
+        color: #000000 !important;
         text-decoration: underline;
         line-height: 1.2;
     }
