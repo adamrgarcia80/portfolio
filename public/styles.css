@@ -14,20 +14,49 @@ html {
     --text-color: #ffffff;
     --spacing-unit: 1.5rem;
     --max-width: 1200px;
+    --content-width: 75%;
 }
 
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.5;
+    line-height: 1.6;
     font-weight: 300;
+    font-size: 1rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     text-align: left;
     margin: 0;
     padding: 0;
+}
+
+/* Base typography - all text same size */
+p, div, span, a, li, td, th {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-color);
+}
+
+/* Only headers are bold */
+h1, h2, h3, h4, h5, h6 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Links - white, only change on hover */
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+a:hover {
+    opacity: 0.7;
+    color: var(--text-color);
 }
 
 .container {
@@ -188,27 +217,30 @@ main {
     text-align: left;
 }
 
+.content-section {
+    max-width: var(--content-width);
+}
+
 .content-section .text-header {
-    font-size: 1.5rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.03em;
     text-align: left;
 }
 
 .content-section .text-body-bold {
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: var(--spacing-unit);
-    line-height: 1.3;
+    line-height: 1.6;
     text-align: left;
 }
 
 .content-section .text-body-regular {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 300;
     margin-bottom: var(--spacing-unit);
-    line-height: 1.3;
+    line-height: 1.6;
     text-align: left;
 }
 
@@ -218,18 +250,19 @@ main {
 }
 
 .content-section .text-link {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 300;
     text-decoration: underline;
     color: var(--text-color);
     margin-bottom: var(--spacing-unit);
-    line-height: 1.3;
+    line-height: 1.6;
     text-align: left;
     display: inline-block;
 }
 
 .content-section .text-link:hover {
-    opacity: 0.8;
+    opacity: 0.7;
+    color: var(--text-color);
 }
 
 .inline-link {
@@ -238,7 +271,8 @@ main {
 }
 
 .inline-link:hover {
-    opacity: 0.8;
+    opacity: 0.7;
+    color: var(--text-color);
 }
 
 .content-section img {
@@ -587,8 +621,8 @@ button:hover {
 }
 
 .nav-logo {
-    font-size: 1.1rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--text-color);
     text-decoration: none;
     letter-spacing: 0.05em;
@@ -597,6 +631,7 @@ button:hover {
 
 .nav-logo:hover {
     opacity: 0.7;
+    color: var(--text-color);
 }
 
 .nav-links {
@@ -607,7 +642,7 @@ button:hover {
 .nav-links a {
     color: var(--text-color);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 300;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -616,51 +651,56 @@ button:hover {
 
 .nav-links a:hover {
     opacity: 0.7;
+    color: var(--text-color);
 }
 
 /* Hero Section */
 .hero-section {
     margin-bottom: calc(var(--spacing-unit) * 4);
     padding: calc(var(--spacing-unit) * 2) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .manifesto {
-    max-width: 900px;
+    max-width: var(--content-width);
 }
 
 .hero-headline {
-    font-size: 2.5rem;
-    font-weight: 400;
-    line-height: 1.2;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.6;
     margin-bottom: var(--spacing-unit);
-    letter-spacing: -0.02em;
 }
 
 .hero-subtext {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 300;
-    line-height: 1.5;
-    opacity: 0.9;
+    line-height: 1.6;
     font-style: italic;
 }
 
 /* Sections */
 .section {
     margin-bottom: calc(var(--spacing-unit) * 4);
-    padding: calc(var(--spacing-unit) * 2) 0;
+    padding: calc(var(--spacing-unit) * 3) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section:last-child {
+    border-bottom: none;
 }
 
 .section-title {
-    font-size: 1.5rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: calc(var(--spacing-unit) * 2);
-    letter-spacing: 0.05em;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* Practice Section */
 .practice-section {
-    max-width: 800px;
+    max-width: var(--content-width);
 }
 
 .practice-content {
@@ -673,7 +713,6 @@ button:hover {
     font-size: 1rem;
     font-weight: 300;
     line-height: 1.6;
-    opacity: 0.9;
 }
 
 /* Work Section & Pillars */
@@ -727,18 +766,16 @@ button:hover {
 }
 
 .pillar-title {
-    font-size: 1.3rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.03em;
 }
 
 .pillar-description {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 300;
-    opacity: 0.8;
     margin-bottom: calc(var(--spacing-unit) * 1.5);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .pillar-brands {
@@ -749,16 +786,14 @@ button:hover {
 }
 
 .brand-node {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 300;
     line-height: 1.6;
     margin-bottom: var(--spacing-unit);
-    opacity: 0.9;
 }
 
 .brand-node strong {
-    font-weight: 500;
-    opacity: 1;
+    font-weight: 700;
 }
 
 .brand-node:last-child {
@@ -788,26 +823,24 @@ button:hover {
 }
 
 .pillar-project-title {
-    font-size: 1.1rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: 0.25rem;
-    letter-spacing: 0.02em;
 }
 
 .pillar-project-title:hover {
-    text-decoration: underline;
+    opacity: 0.7;
 }
 
 .pillar-project-meta {
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 300;
-    opacity: 0.7;
     margin-top: 0.25rem;
 }
 
 /* Thinking Section */
 .thinking-section {
-    max-width: 800px;
+    max-width: var(--content-width);
 }
 
 .essays-container {
@@ -823,33 +856,30 @@ button:hover {
 }
 
 .essay-item:hover {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .essay-title {
-    font-size: 1.1rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
-    letter-spacing: 0.02em;
 }
 
 .essay-excerpt {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 300;
-    opacity: 0.8;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .placeholder-text {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 300;
-    opacity: 0.6;
     font-style: italic;
 }
 
 /* Contact Section */
 .contact-section {
-    max-width: 800px;
+    max-width: var(--content-width);
 }
 
 .contact-content {
@@ -867,16 +897,21 @@ button:hover {
 .contact-link {
     color: var(--text-color);
     text-decoration: underline;
-    font-size: 0.95rem;
+    font-size: 1rem;
     transition: opacity 0.2s;
 }
 
 .contact-link:hover {
     opacity: 0.7;
+    color: var(--text-color);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+    :root {
+        --content-width: 100%;
+    }
+    
     .main-nav {
         flex-direction: column;
         align-items: flex-start;
@@ -885,10 +920,6 @@ button:hover {
     
     .nav-links {
         flex-wrap: wrap;
-    }
-    
-    .hero-headline {
-        font-size: 1.8rem;
     }
     
     .pillar {
