@@ -12,6 +12,8 @@
 <body>
     <div class="admin-container">
         <div class="admin-header">
+            <h1>Add Project</h1>
+            <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Password: <strong>admin123</strong></p>
             <div id="authSection" class="auth-form">
                 <input type="password" id="passwordInput" placeholder="Enter password" />
                 <button onclick="authenticate()">Access</button>
@@ -77,60 +79,7 @@
             
             <!-- Save Project Button -->
             <div class="admin-section">
-                <button onclick="saveProjectInfo()" class="save-project-btn" style="width: 100%;">Save Project</button>
-            </div>
-            
-            <!-- Index Page Settings -->
-            <div class="admin-section">
-                <h2>Index Page Intro Copy</h2>
-                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Edit the bio text that appears at the top of the index page. Use &lt;br&gt; or &lt;br/&gt; for line breaks.</p>
-                <div class="form-group">
-                    <textarea id="bioText" placeholder="Enter intro copy text..." style="min-height: 250px;"></textarea>
-                </div>
-                <div class="form-group">
-                    <button onclick="saveBioText()">Save Intro Copy</button>
-                </div>
-            </div>
-            
-            <!-- Footer Links -->
-            <div class="admin-section">
-                <h2>Footer Links</h2>
-                <div id="footerLinksList" style="margin-top: var(--spacing-unit);"></div>
-                <div class="form-group" style="display: flex; gap: var(--spacing-unit); margin-top: var(--spacing-unit);">
-                    <input type="text" id="linkText" placeholder="Link text" style="flex: 1;" />
-                    <input type="text" id="linkUrl" placeholder="URL" style="flex: 1;" />
-                    <button onclick="addFooterLink()">Add Link</button>
-                </div>
-            </div>
-            
-            <!-- Simple Cloud Sync -->
-            <div class="admin-section">
-                <h2>Cloud Sync (Simple)</h2>
-                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Sync your portfolio across all devices. <a href="https://jsonbin.io/" target="_blank" style="color: var(--text-color); text-decoration: underline;">Sign up for free</a>, then:</p>
-                <ol style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit); padding-left: 1.5rem;">
-                    <li>Go to <a href="https://jsonbin.io/" target="_blank" style="color: var(--text-color); text-decoration: underline;">jsonbin.io</a> and sign up (free)</li>
-                    <li>Go to "API Keys" in your dashboard</li>
-                    <li>Copy your "Secret Key" and paste it below</li>
-                </ol>
-                <div class="form-group">
-                    <input type="text" id="jsonbinApiKey" placeholder="Paste your JSONBin Secret Key" style="font-family: monospace; font-size: 0.9rem;" />
-                </div>
-                <div class="form-group">
-                    <button onclick="saveJsonbinConfigHandler()">Save Sync Settings</button>
-                </div>
-                <div id="jsonbinStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
-            </div>
-            
-            <!-- Data Export/Import -->
-            <div class="admin-section">
-                <h2>Sync Data</h2>
-                <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--spacing-unit);">Export your data to transfer it to another device, or import data from another device.</p>
-                <div class="form-group" style="display: flex; gap: var(--spacing-unit);">
-                    <button onclick="exportData()" style="flex: 1;">Export Data</button>
-                    <button onclick="document.getElementById('importFile').click()" style="flex: 1;">Import Data</button>
-                </div>
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)" />
-                <div id="syncStatus" style="margin-top: var(--spacing-unit); font-size: 0.85rem;"></div>
+                <button onclick="saveProjectInfo()" style="width: 100%;">Save Project</button>
             </div>
             
             <div class="admin-section">
@@ -139,7 +88,7 @@
         </div>
     </div>
     
-    <script src="storage.js"></script>
-    <script src="admin-indexeddb.js"></script>
+    <script src="github-config.js"></script>
+    <script src="admin-github.js"></script>
 </body>
 </html>
